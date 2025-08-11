@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=4 uid="uid://ceiql51yedm87"]
+[gd_scene load_steps=6 format=4 uid="uid://ceiql51yedm87"]
 
 [ext_resource type="Script" uid="uid://uhb2wn7jt6eg" path="res://Scripts/Game.cs" id="1_sb48q"]
-[ext_resource type="PackedScene" uid="uid://d1egndrvgqobw" path="res://Cenas/Npc.tscn" id="3_3ra8f"]
 [ext_resource type="Texture2D" uid="uid://b3kc2fh7fmer8" path="res://Maps/tileMap.png" id="3_i6tff"]
 [ext_resource type="PackedScene" uid="uid://cl5xjh3qlugt1" path="res://Cenas/Player.tscn" id="5_sht0m"]
 
@@ -603,6 +602,3 @@ tile_set = SubResource("TileSet_sht0m")
 
 [node name="Player" parent="." instance=ExtResource("5_sht0m")]
 position = Vector2(594, 349)
-
-[node name="Npc" parent="." instance=ExtResource("3_3ra8f")]
-position = Vector2(614, 524)

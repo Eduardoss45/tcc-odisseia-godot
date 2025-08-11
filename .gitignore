@@ -1,29 +1,17 @@
-# Pastas de importação e cache
 .import/
 .export/
 /android/
-
-# Arquivos temporários e backup
+addons/dialogic/
 *.tmp
 *.temp
 *.log
 *.import
-
-# Configurações locais do Godot (variam por máquina)
 *.godot
 *.godot.tmp
-
-# Arquivos de exportação
 *.pck
 *.zip
-
-# Pasta de builds (se existir)
 bin/
 build/
-
-# Configurações do sistema operacional (exemplos)
 .DS_Store
 Thumbs.db
-
-# Plugins, se quiser ignorar (exemplo)
 Modules/
