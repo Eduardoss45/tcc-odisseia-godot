@@ -1,0 +1,9 @@
+[wait_input]
+Npc: Olá, viajante! Está perdido?
+Player: Olá! Sim, estou tentando encontrar a vila próxima.
+Npc: Ah, a vila fica a alguns quilômetros ao norte.
+Player: Obrigado! Tem algum caminho seguro para chegar lá?
+Npc: Sim, siga pelo rio até a ponte velha, depois vire à direita.
+Player: Perfeito, vou seguir sua dica. E cuidado com os lobos na floresta.
+Npc: Obrigado pelo aviso! Boa sorte na sua jornada.
+[end_timeline]
