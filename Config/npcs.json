@@ -1,0 +1,24 @@
+[
+  {
+    "SpriteSheetRows": 1,
+    "SpriteSheetCols": 8,
+    "SpriteSheetWidth": 512,
+    "SpriteSheetHeight": 64,
+    "DialogTimelineName": "npc_dialogo_1",
+    "CharacterResourcePath": "res://Chars/Npc.dch",
+    "PlayerResourcePath": "res://Chars/Player.dch",
+    "SpriteSheetPath": "res://Sprites/player_spritesheet.png",
+    "Position": [200, 300]
+  },
+  {
+    "SpriteSheetRows": 1,
+    "SpriteSheetCols": 8,
+    "SpriteSheetWidth": 512,
+    "SpriteSheetHeight": 64,
+    "DialogTimelineName": "npc_dialogo_2",
+    "CharacterResourcePath": "res://Chars/Npc.dch",
+    "PlayerResourcePath": "res://Chars/Player.dch",
+    "SpriteSheetPath": "res://Sprites/player_spritesheet.png",
+    "Position": [600, 500]
+  }
+]

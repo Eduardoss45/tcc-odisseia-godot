@@ -1,0 +1,11 @@
+[wait_input]
+Npc: Vejo que você conseguiu chegar até a vila!
+Player: Sim, suas instruções foram muito úteis.
+Npc: Fico feliz! Conseguiu evitar os lobos na floresta?
+Player: Sim, mas quase fui surpreendido por um deles.
+Npc: Ainda bem que você é rápido. A floresta está cada vez mais perigosa.
+Player: Por que será que os lobos estão mais agressivos?
+Npc: Alguns dizem que algo os está assustando... vindo do norte.
+Player: Interessante... Talvez eu deva investigar.
+Npc: Se for, tome cuidado. Nem todos que vão para lá voltam.
+[end_timeline]

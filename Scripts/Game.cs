@@ -1,57 +1,75 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 public partial class Game : Node2D
 {
-    // Caminho para a cena do NPC (PackedScene)
     [Export]
     public string NpcScenePath { get; set; } = "res://Cenas/Npc.tscn";
 
+    [Export]
+    public string NpcConfigPath { get; set; } = "res://Config/npcs.json";
+
     public override void _Ready()
     {
-        // Config (poderia vir de JSON)
-        var npcData = new Dictionary<string, object>()
+        // Abre o arquivo JSON com Godot.FileAccess
+        using var file = Godot.FileAccess.Open(NpcConfigPath, Godot.FileAccess.ModeFlags.Read);
+        if (file == null)
         {
-            {"SpriteSheetRows", 8},
-            {"SpriteSheetCols", 9},
-            {"SpriteSheetWidth", 512},
-            {"SpriteSheetHeight", 561}, // ! altura da textura - 14 pixels 
-            {"DialogTimelineName", "npc_dialogo_1"},
-            {"CharacterResourcePath", "res://Chars/Npc.dch"},
-            {"PlayerResourcePath", "res://Chars/Player.dch"},
-            {"SpriteSheetPath", "res://Sprites/npc_spritesheet.png"},
-            {"Position", new Vector2(200, 300)} // posição do NPC no mundo
-        };
+            GD.PrintErr($"Não foi possível abrir o arquivo JSON: {NpcConfigPath}");
+            return;
+        }
 
-        LoadNpcFromData(npcData);
+        string jsonText = file.GetAsText();
+
+        try
+        {
+            var npcList = JsonSerializer.Deserialize<List<NpcData>>(jsonText);
+
+            foreach (var npcData in npcList)
+                LoadNpcFromData(npcData);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr($"Erro ao ler JSON: {ex.Message}");
+        }
     }
 
-    private void LoadNpcFromData(Dictionary<string, object> data)
+    private void LoadNpcFromData(NpcData data)
     {
-        PackedScene npcScene = GD.Load<PackedScene>(NpcScenePath);
+        var npcScene = GD.Load<PackedScene>(NpcScenePath);
         if (npcScene == null)
         {
             GD.PrintErr($"Falha ao carregar a cena NPC: {NpcScenePath}");
             return;
         }
-        Npc npcInstance = npcScene.Instantiate<Npc>();
 
-        // Configura propriedades do NPC via dados dinâmicos
-        npcInstance.SpriteSheetRows = Convert.ToInt32(data["SpriteSheetRows"]);
-        npcInstance.SpriteSheetCols = Convert.ToInt32(data["SpriteSheetCols"]);
-        npcInstance.SpriteSheetWidth = Convert.ToInt32(data["SpriteSheetWidth"]);
-        npcInstance.SpriteSheetHeight = Convert.ToInt32(data["SpriteSheetHeight"]);
-        npcInstance.DialogTimelineName = data["DialogTimelineName"].ToString();
-        npcInstance.CharacterResourcePath = data["CharacterResourcePath"].ToString();
-        npcInstance.PlayerResourcePath = data["PlayerResourcePath"].ToString();
-        npcInstance.SpriteSheetPath = data["SpriteSheetPath"].ToString();
+        var npcInstance = npcScene.Instantiate<Npc>();
 
-        // Ajusta a posição no mundo, se fornecida
-        if (data.ContainsKey("Position") && data["Position"] is Vector2 pos)
-        {
-            npcInstance.Position = pos;
-        }
+        npcInstance.SpriteSheetRows = data.SpriteSheetRows;
+        npcInstance.SpriteSheetCols = data.SpriteSheetCols;
+        npcInstance.SpriteSheetWidth = data.SpriteSheetWidth;
+        npcInstance.SpriteSheetHeight = data.SpriteSheetHeight;
+        npcInstance.DialogTimelineName = data.DialogTimelineName;
+        npcInstance.CharacterResourcePath = data.CharacterResourcePath;
+        npcInstance.PlayerResourcePath = data.PlayerResourcePath;
+        npcInstance.SpriteSheetPath = data.SpriteSheetPath;
+        npcInstance.Position = new Vector2(data.Position[0], data.Position[1]);
+
         AddChild(npcInstance);
+    }
+
+    private class NpcData
+    {
+        public int SpriteSheetRows { get; set; }
+        public int SpriteSheetCols { get; set; }
+        public int SpriteSheetWidth { get; set; }
+        public int SpriteSheetHeight { get; set; }
+        public string DialogTimelineName { get; set; }
+        public string CharacterResourcePath { get; set; }
+        public string PlayerResourcePath { get; set; }
+        public string SpriteSheetPath { get; set; }
+        public float[] Position { get; set; }
     }
 }
