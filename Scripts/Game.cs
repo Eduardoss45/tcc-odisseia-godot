@@ -56,6 +56,7 @@ public partial class Game : Node2D
         npcInstance.PlayerResourcePath = data.PlayerResourcePath;
         npcInstance.SpriteSheetPath = data.SpriteSheetPath;
         npcInstance.Position = new Vector2(data.Position[0], data.Position[1]);
+        npcInstance.SetAIActive(data.AiEnabled);
 
         AddChild(npcInstance);
     }
@@ -71,5 +72,6 @@ public partial class Game : Node2D
         public string PlayerResourcePath { get; set; }
         public string SpriteSheetPath { get; set; }
         public float[] Position { get; set; }
+        public bool AiEnabled { get; set; }  
     }
 }

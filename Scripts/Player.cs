@@ -5,8 +5,11 @@ using System.Linq;
 
 public partial class Player : CharacterBody2D
 {
-	[Export]
-	public float Speed = 200.0f;
+	[Export] public float BaseSpeed = 200.0f;
+	[Export] public float DashBonus = 200.0f;
+	[Export] public float DashDuration = 0.3f;
+	[Export] public float DashCooldown = 2.0f;
+
 	private Sprite2D sprite;
 	private Camera2D camera;
 	private Queue<int> directionHistory = new Queue<int>();
@@ -14,30 +17,73 @@ public partial class Player : CharacterBody2D
 	private int animationFrame = 0;
 	private float frameTimer = 0f;
 	private float frameDuration = 0.1f;
+
+	private bool isDashing = false;
+	private float dashTimeLeft = 0f;
+	private float dashCooldownLeft = 0f;
+
 	public override void _Ready()
 	{
 		Position = new Vector2(600, 350);
 		sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 		camera = GetNodeOrNull<Camera2D>("Camera2D");
+
 		if (sprite != null)
 		{
 			sprite.Hframes = 8;
 			sprite.Vframes = 9;
 		}
 	}
+
 	public override void _PhysicsProcess(double delta)
 	{
 		if (sprite == null)
 			return;
+
+
+		if (dashTimeLeft > 0)
+		{
+			dashTimeLeft -= (float)delta;
+			if (dashTimeLeft <= 0)
+				isDashing = false;
+		}
+		if (dashCooldownLeft > 0)
+			dashCooldownLeft -= (float)delta;
+
+
+		if (Input.IsKeyPressed(Key.Q) && dashCooldownLeft <= 0 && !isDashing)
+		{
+			isDashing = true;
+			dashTimeLeft = DashDuration;
+			dashCooldownLeft = DashCooldown;
+		}
+
 		Vector2 direction = Vector2.Zero;
 		if (Input.IsKeyPressed(Key.W)) direction.Y -= 1;
 		if (Input.IsKeyPressed(Key.S)) direction.Y += 1;
 		if (Input.IsKeyPressed(Key.A)) direction.X -= 1;
 		if (Input.IsKeyPressed(Key.D)) direction.X += 1;
+
+		if (camera != null)
+		{
+			bool isMoving = direction != Vector2.Zero;
+			Vector2 targetZoom;
+			if (isDashing)
+				targetZoom = new Vector2(1.6f, 1.6f);
+			else if (isMoving)
+				targetZoom = new Vector2(1.5f, 1.5f);
+			else
+				targetZoom = new Vector2(1f, 1f);
+			camera.Zoom = camera.Zoom.Lerp(targetZoom, 5f * (float)delta);
+		}
+
 		if (direction != Vector2.Zero)
 		{
 			direction = direction.Normalized();
-			Velocity = direction * Speed;
+			float currentSpeed = BaseSpeed;
+			if (isDashing)
+				currentSpeed += DashBonus;
+			Velocity = direction * currentSpeed;
 			MoveAndSlide();
 			int dirIndex = GetDirectionIndex(direction);
 			directionHistory.Enqueue(dirIndex);

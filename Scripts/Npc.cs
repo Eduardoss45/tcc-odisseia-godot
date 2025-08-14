@@ -1,41 +1,61 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class Npc : CharacterBody2D
 {
+    // -------------------
+    // NODES
+    // -------------------
     private Node? dialogic;
-    private bool isConnected = false;
-
     private Sprite2D sprite;
+    private Node2D player;
 
-    [Export]
-    public string SpriteSheetPath { get; set; } = "res://Sprites/npc_spritesheet.png";
+    // -------------------
+    // AI CONFIG
+    // -------------------
+    [Export] public bool AiEnabled { get; set; } = false;
+    [Export] public float Speed { get; set; } = 80f;
+    [Export] public float DetectionRange { get; set; } = 200f;
+    [Export] public float StopRange { get; set; } = 32f;
+    private Vector2 velocity = Vector2.Zero;
 
-    [Export]
-    public int SpriteSheetRows { get; set; } = 8;
-
-    [Export]
-    public int SpriteSheetCols { get; set; } = 9;
-
-    [Export]
-    public int SpriteSheetWidth { get; set; } = 512;
-
-    [Export]
-    public int SpriteSheetHeight { get; set; } = 576;
-
-    [Export]
-    public string DialogTimelineName { get; set; } = "npc_dialogo_1";
-
-    [Export]
-    public string CharacterResourcePath { get; set; } = "res://Chars/Npc.dch";
-
-    [Export]
-    public string PlayerResourcePath { get; set; } = "res://Chars/Player.dch";
+    // -------------------
+    // SPRITE / ANIMATION
+    // -------------------
+    [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/npc_spritesheet.png";
+    [Export] public int SpriteSheetRows { get; set; } = 8;
+    [Export] public int SpriteSheetCols { get; set; } = 9;
+    [Export] public int SpriteSheetWidth { get; set; } = 512;
+    [Export] public int SpriteSheetHeight { get; set; } = 576;
 
     private Rect2[,] animationRects;
+    private int animationFrame = 0;
+    private float frameTimer = 0f;
+    private Queue<int> directionHistory = new Queue<int>();
+    private const int MaxHistorySize = 8;
 
+    // -------------------
+    // DIALOG
+    // -------------------
+    [Export] public string DialogTimelineName { get; set; } = "npc_dialogo_1";
+    [Export] public string CharacterResourcePath { get; set; } = "res://Chars/Npc.dch";
+    [Export] public string PlayerResourcePath { get; set; } = "res://Chars/Player.dch";
+
+    private bool isConnected = false;
+
+    // -------------------
+    // GODOT CALLBACKS
+    // -------------------
     public override void _Ready()
     {
+        // Player
+        player = GetNodeOrNull<Node2D>("/root/World/Player");
+        if (player == null)
+            GD.PrintErr("Player não encontrado em /root/World/Player");
+
+        // Dialogic
         dialogic = GetNodeOrNull("/root/Dialogic");
         if (dialogic == null)
         {
@@ -43,8 +63,8 @@ public partial class Npc : CharacterBody2D
             return;
         }
 
+        // Sprite
         sprite = GetNode<Sprite2D>("Sprite2D");
-
         var texture = GD.Load<Texture2D>(SpriteSheetPath);
         if (texture == null)
         {
@@ -52,13 +72,11 @@ public partial class Npc : CharacterBody2D
             return;
         }
         sprite.Texture = texture;
-
         sprite.RegionEnabled = true;
-
         InitializeAnimationRects();
-
         SetAnimationFrame(0, 0);
 
+        // Clique
         Area2D? clickArea = GetNodeOrNull<Area2D>("Area2D");
         if (clickArea != null)
             clickArea.Connect("input_event", new Callable(this, nameof(OnClicked)));
@@ -66,23 +84,110 @@ public partial class Npc : CharacterBody2D
             GD.PrintErr("Area2D não encontrada no NPC.");
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        if (!AiEnabled || player == null || sprite == null)
+            return;
+
+        UpdateAI();
+
+        Velocity = velocity;
+        MoveAndSlide();
+
+        UpdateAnimation(delta);
+    }
+
+    // -------------------
+    // AI / MOVIMENTO
+    // -------------------
+    private void UpdateAI()
+    {
+        float distanceToPlayer = Position.DistanceTo(player.Position);
+        if (distanceToPlayer <= DetectionRange && distanceToPlayer > StopRange)
+            velocity = (player.Position - Position).Normalized() * Speed;
+        else
+            velocity = Vector2.Zero;
+    }
+
+    // -------------------
+    // ANIMAÇÃO
+    // -------------------
+    private void UpdateAnimation(double delta)
+    {
+        bool isMoving = velocity.Length() > 0;
+
+        if (isMoving)
+        {
+            int dirIndex = GetDirectionIndex(velocity);
+            frameTimer += (float)delta;
+            if (frameTimer >= 0.1f)
+            {
+                frameTimer = 0f;
+                animationFrame = (animationFrame + 1) % SpriteSheetCols;
+            }
+            sprite.FrameCoords = new Vector2I(animationFrame, dirIndex + 1);
+
+            directionHistory.Enqueue(dirIndex);
+            if (directionHistory.Count > MaxHistorySize)
+                directionHistory.Dequeue();
+        }
+        else
+        {
+            animationFrame = 0;
+            int idleDir = GetMostFrequentDirection();
+            sprite.FrameCoords = new Vector2I(idleDir, 0);
+        }
+    }
 
     private void InitializeAnimationRects()
     {
         int frameWidth = SpriteSheetWidth / SpriteSheetCols;
         int frameHeight = SpriteSheetHeight / SpriteSheetRows;
-
         animationRects = new Rect2[SpriteSheetRows, SpriteSheetCols];
 
         for (int row = 0; row < SpriteSheetRows; row++)
-        {
             for (int col = 0; col < SpriteSheetCols; col++)
-            {
                 animationRects[row, col] = new Rect2(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
-            }
-        }
     }
 
+    public void SetAnimationFrame(int row, int col)
+    {
+        if (row < 0 || row >= SpriteSheetRows || col < 0 || col >= SpriteSheetCols)
+        {
+            GD.PrintErr("Frame fora do intervalo da matriz.");
+            return;
+        }
+        sprite.RegionRect = animationRects[row, col];
+    }
+
+    private int GetDirectionIndex(Vector2 dir)
+    {
+        dir = dir.Normalized();
+        if (dir.X < 0 && dir.Y > 0) return 1;
+        if (dir.X < 0 && dir.Y < 0) return 3;
+        if (dir.X > 0 && dir.Y < 0) return 5;
+        if (dir.X > 0 && dir.Y > 0) return 7;
+        if (dir.Y > 0) return 0;
+        if (dir.X < 0) return 2;
+        if (dir.Y < 0) return 4;
+        if (dir.X > 0) return 6;
+        return 0;
+    }
+
+    private int GetMostFrequentDirection()
+    {
+        if (directionHistory.Count == 0)
+            return 0;
+
+        return directionHistory
+            .GroupBy(x => x)
+            .OrderByDescending(g => g.Count())
+            .First().Key;
+    }
+
+    // -------------------
+    // DIÁLOGO
+    // -------------------
     private void OnClicked(Node viewport, InputEvent @event, int shapeIdx)
     {
         if (@event is InputEventMouseButton mouseEvent &&
@@ -132,6 +237,7 @@ public partial class Npc : CharacterBody2D
             GD.PrintErr("Layout retornado não é um CanvasLayer válido.");
             return;
         }
+
         layout.Call("register_character", characterResource, marker);
         layout.Call("register_character", playerResource, playerMarker);
 
@@ -151,14 +257,11 @@ public partial class Npc : CharacterBody2D
         }
     }
 
-    public void SetAnimationFrame(int row, int col)
+    // -------------------
+    // UTILITÁRIOS
+    // -------------------
+    public void SetAIActive(bool active)
     {
-        if (row < 0 || row >= SpriteSheetRows || col < 0 || col >= SpriteSheetCols)
-        {
-            GD.PrintErr("Frame fora do intervalo da matriz.");
-            return;
-        }
-
-        sprite.RegionRect = animationRects[row, col];
+        AiEnabled = active;
     }
 }
