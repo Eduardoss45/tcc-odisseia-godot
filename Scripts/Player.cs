@@ -68,7 +68,7 @@ public partial class Player : CharacterBody2D
 		{
 			bool isMoving = direction != Vector2.Zero;
 			Vector2 targetZoom;
-			if (isDashing)
+			if (isDashing && isMoving)
 				targetZoom = new Vector2(1.6f, 1.6f);
 			else if (isMoving)
 				targetZoom = new Vector2(1.5f, 1.5f);
