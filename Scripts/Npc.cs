@@ -72,9 +72,12 @@ public partial class Npc : CharacterBody2D
             return;
         }
         sprite.Texture = texture;
-        sprite.RegionEnabled = true;
+        sprite.RegionEnabled = false;
         InitializeAnimationRects();
         SetAnimationFrame(0, 0);
+
+        sprite.Hframes = SpriteSheetCols; // número de colunas
+        sprite.Vframes = SpriteSheetRows; // número de linhas
 
         // Clique
         Area2D? clickArea = GetNodeOrNull<Area2D>("Area2D");
@@ -90,54 +93,62 @@ public partial class Npc : CharacterBody2D
             return;
 
         UpdateAI();
-
-        Velocity = velocity;
         MoveAndSlide();
-
         UpdateAnimation(delta);
     }
+
 
     // -------------------
     // AI / MOVIMENTO
     // -------------------
     private void UpdateAI()
     {
+        if (player == null)
+        {
+            velocity = Vector2.Zero;
+            return;
+        }
+
         float distanceToPlayer = Position.DistanceTo(player.Position);
+
         if (distanceToPlayer <= DetectionRange && distanceToPlayer > StopRange)
             velocity = (player.Position - Position).Normalized() * Speed;
         else
             velocity = Vector2.Zero;
+
+        // Atualiza o CharacterBody2D
+        Velocity = velocity;
     }
+
 
     // -------------------
     // ANIMAÇÃO
     // -------------------
     private void UpdateAnimation(double delta)
     {
+        velocity = Velocity;
         bool isMoving = velocity.Length() > 0;
+
+        int dirIndex = isMoving ? GetDirectionIndex(velocity) : GetMostFrequentDirection();
+        dirIndex = Math.Clamp(dirIndex, 0, SpriteSheetRows - 1);
 
         if (isMoving)
         {
-            int dirIndex = GetDirectionIndex(velocity);
             frameTimer += (float)delta;
             if (frameTimer >= 0.1f)
             {
                 frameTimer = 0f;
                 animationFrame = (animationFrame + 1) % SpriteSheetCols;
             }
-            sprite.FrameCoords = new Vector2I(animationFrame, dirIndex + 1);
-
-            directionHistory.Enqueue(dirIndex);
-            if (directionHistory.Count > MaxHistorySize)
-                directionHistory.Dequeue();
         }
         else
         {
             animationFrame = 0;
-            int idleDir = GetMostFrequentDirection();
-            sprite.FrameCoords = new Vector2I(idleDir, 0);
         }
+
+        sprite.FrameCoords = new Vector2I(animationFrame, dirIndex);
     }
+
 
     private void InitializeAnimationRects()
     {

@@ -38,7 +38,7 @@ public partial class NpcAI : Node
             velocity = (player.Position - npc.Position).Normalized() * Speed;
         }
 
-        npc.Velocity = velocity;
+        npc.SetVelocity(velocity); // além de npc.Velocity = velocity
         npc.MoveAndSlide();
     }
 }

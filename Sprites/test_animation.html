@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sprite 1x4 com Mirror</title>
+    <style>
+      canvas {
+        background-color: #222;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="game" width="1280" height="720"></canvas>
+    <script>
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+
+      // --------- CONFIGURAÇÕES DO SPRITE ---------
+      const spriteImg = new Image();
+      spriteImg.src = "javali_spritesheet_low.png"; // sua imagem 1 linha x 4 colunas
+      const SPRITE_WIDTH = 40; // largura de cada frame
+      const SPRITE_HEIGHT = 30; // altura de cada frame
+      const NUM_FRAMES = 4; // 4 colunas
+
+      let x = 150;
+      let y = 150;
+      let speed = 3;
+
+      let currentFrame = 0;
+      let frameTimer = 0;
+      const frameDuration = 10; // atualizar frame a cada 10 ticks
+
+      let direction = "idle"; // 'left' ou 'right'
+
+      // --------- INPUT ---------
+      const keys = {};
+
+      window.addEventListener("keydown", (e) => (keys[e.key] = true));
+      window.addEventListener("keyup", (e) => (keys[e.key] = false));
+
+      // --------- LOOP PRINCIPAL ---------
+      function update() {
+        let moving = false;
+
+        // Movimento horizontal
+        if (keys["ArrowRight"]) {
+          x += speed;
+          direction = "right";
+          moving = true;
+        } else if (keys["ArrowLeft"]) {
+          x -= speed;
+          direction = "left";
+          moving = true;
+        }
+
+        // Ignora cima/baixo
+        if (keys["ArrowUp"] || keys["ArrowDown"]) {
+          // nada
+        }
+
+        // Atualiza animação apenas se estiver se movendo horizontalmente
+        if (moving) {
+          frameTimer++;
+          if (frameTimer >= frameDuration) {
+            frameTimer = 0;
+            currentFrame = (currentFrame + 1) % NUM_FRAMES;
+          }
+        } else {
+          currentFrame = 0; // idle
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.translate(x + SPRITE_WIDTH / 2, y + SPRITE_HEIGHT / 2);
+
+        // Espelha se for para a direita
+        if (direction === "right") ctx.scale(-1, 1);
+
+        ctx.drawImage(
+          spriteImg,
+          currentFrame * SPRITE_WIDTH,
+          0,
+          SPRITE_WIDTH,
+          SPRITE_HEIGHT, // frame source
+          -SPRITE_WIDTH / 2,
+          -SPRITE_HEIGHT / 2,
+          SPRITE_WIDTH,
+          SPRITE_HEIGHT // posição no canvas
+        );
+
+        ctx.restore();
+      }
+
+      function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      // Inicia quando a imagem carregar
+      spriteImg.onload = () => {
+        loop();
+      };
+    </script>
+  </body>
+</html>
