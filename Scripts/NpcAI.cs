@@ -12,7 +12,6 @@ public partial class NpcAI : Node
 
     public override void _Ready()
     {
-        // Assumir que o script está dentro do NPC
         npc = GetParent<Npc>();
         if (npc == null)
         {
@@ -38,7 +37,7 @@ public partial class NpcAI : Node
             velocity = (player.Position - npc.Position).Normalized() * Speed;
         }
 
-        npc.SetVelocity(velocity); // além de npc.Velocity = velocity
+        npc.SetVelocity(velocity);
         npc.MoveAndSlide();
     }
 }

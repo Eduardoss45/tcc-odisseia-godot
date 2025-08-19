@@ -171,19 +171,33 @@ public partial class Npc : CharacterBody2D
         sprite.RegionRect = animationRects[row, col];
     }
 
-    private int GetDirectionIndex(Vector2 dir)
+    private int GetDirectionIndex(Vector2 velocity)
     {
-        dir = dir.Normalized();
-        if (dir.X < 0 && dir.Y > 0) return 1;
-        if (dir.X < 0 && dir.Y < 0) return 3;
-        if (dir.X > 0 && dir.Y < 0) return 5;
-        if (dir.X > 0 && dir.Y > 0) return 7;
-        if (dir.Y > 0) return 0;
-        if (dir.X < 0) return 2;
-        if (dir.Y < 0) return 4;
-        if (dir.X > 0) return 6;
-        return 0;
+        if (velocity == Vector2.Zero)
+            return 0;
+
+        double angle = Math.Atan2(velocity.Y, velocity.X);
+        double degrees = angle * (180 / Math.PI);
+        
+        if (degrees < 0)
+            degrees += 360;
+
+        int sector = (int)Math.Round(degrees / 45.0) % 8;
+        int[] spriteMap = {
+        7, // 0 = direita
+        8, // 1 = baixo-direita
+        1, // 2 = baixo
+        2, // 3 = baixo-esquerda
+        3, // 4 = esquerda
+        4, // 5 = cima-esquerda
+        5, // 6 = cima
+        6  // 7 = cima-direita
+    };
+
+        return spriteMap[sector];
     }
+
+
 
     private int GetMostFrequentDirection()
     {
