@@ -1,5 +1,6 @@
 [
   {
+    "ScenePath": "res://Cenas/Npc.tscn",
     "SpriteSheetRows": 9,
     "SpriteSheetCols": 8,
     "SpriteSheetWidth": 512,
@@ -12,6 +13,7 @@
     "AiEnabled": true
   },
   {
+    "ScenePath": "res://Cenas/Npc.tscn",
     "SpriteSheetRows": 9,
     "SpriteSheetCols": 8,
     "SpriteSheetWidth": 512,
@@ -22,5 +24,16 @@
     "SpriteSheetPath": "res://Sprites/npc_spritesheet.png",
     "Position": [600, 500],
     "AiEnabled": false
+  },
+  {
+    "ScenePath": "res://Cenas/Player.tscn",
+    "Position": [600, 350],
+    "BaseSpeed": 200,
+    "PlayerSpriteSheetPath": "res://Sprites/player_spritesheet.png",
+    "SpriteHFrames": 8,
+    "SpriteVFrames": 9,
+    "CrosshairPath": "res://Sprites/crosshair.png",
+    "ArrowScenePath": "res://Cenas/Arrow.tscn",
+    "ArrowSpriteSheetPath": "res://Sprites/arrow.png"
   }
 ]

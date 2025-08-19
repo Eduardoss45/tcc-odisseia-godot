@@ -3,21 +3,38 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
+public class EntityData
+{
+    public string ScenePath { get; set; }
+    public float[] Position { get; set; }
+    public int SpriteSheetRows { get; set; }
+    public int SpriteSheetCols { get; set; }
+    public int SpriteSheetWidth { get; set; }
+    public int SpriteSheetHeight { get; set; }
+    public string DialogTimelineName { get; set; }
+    public string CharacterResourcePath { get; set; }
+    public string PlayerResourcePath { get; set; }
+    public string SpriteSheetPath { get; set; }
+    public bool AiEnabled { get; set; }
+    public float BaseSpeed { get; set; }
+    public string PlayerSpriteSheetPath { get; set; }
+    public int SpriteHFrames { get; set; }
+    public int SpriteVFrames { get; set; }
+    public string CrosshairPath { get; set; }
+    public string ArrowScenePath { get; set; }
+    public string ArrowSpriteSheetPath { get; set; }
+}
+
 public partial class Game : Node2D
 {
-    [Export]
-    public string NpcScenePath { get; set; } = "res://Cenas/Npc.tscn";
-
-    [Export]
-    public string NpcConfigPath { get; set; } = "res://Config/npcs.json";
+    [Export] public string EntitiesConfigPath { get; set; } = "res://Config/entities.json";
 
     public override void _Ready()
     {
-        // Abre o arquivo JSON com Godot.FileAccess
-        using var file = Godot.FileAccess.Open(NpcConfigPath, Godot.FileAccess.ModeFlags.Read);
+        using var file = Godot.FileAccess.Open(EntitiesConfigPath, Godot.FileAccess.ModeFlags.Read);
         if (file == null)
         {
-            GD.PrintErr($"Não foi possível abrir o arquivo JSON: {NpcConfigPath}");
+            GD.PrintErr($"Não foi possível abrir o arquivo JSON: {EntitiesConfigPath}");
             return;
         }
 
@@ -25,10 +42,9 @@ public partial class Game : Node2D
 
         try
         {
-            var npcList = JsonSerializer.Deserialize<List<NpcData>>(jsonText);
-
-            foreach (var npcData in npcList)
-                LoadNpcFromData(npcData);
+            var entities = JsonSerializer.Deserialize<List<EntityData>>(jsonText);
+            foreach (var data in entities)
+                LoadEntityFromData(data);
         }
         catch (Exception ex)
         {
@@ -36,42 +52,69 @@ public partial class Game : Node2D
         }
     }
 
-    private void LoadNpcFromData(NpcData data)
+    private void LoadEntityFromData(EntityData data)
     {
-        var npcScene = GD.Load<PackedScene>(NpcScenePath);
-        if (npcScene == null)
+        var scene = GD.Load<PackedScene>(data.ScenePath);
+        if (scene == null)
         {
-            GD.PrintErr($"Falha ao carregar a cena NPC: {NpcScenePath}");
+            GD.PrintErr($"Falha ao carregar cena: {data.ScenePath}");
             return;
         }
 
-        var npcInstance = npcScene.Instantiate<Npc>();
+        var instance = scene.Instantiate<Node2D>();
 
-        npcInstance.SpriteSheetRows = data.SpriteSheetRows;
-        npcInstance.SpriteSheetCols = data.SpriteSheetCols;
-        npcInstance.SpriteSheetWidth = data.SpriteSheetWidth;
-        npcInstance.SpriteSheetHeight = data.SpriteSheetHeight;
-        npcInstance.DialogTimelineName = data.DialogTimelineName;
-        npcInstance.CharacterResourcePath = data.CharacterResourcePath;
-        npcInstance.PlayerResourcePath = data.PlayerResourcePath;
-        npcInstance.SpriteSheetPath = data.SpriteSheetPath;
-        npcInstance.Position = new Vector2(data.Position[0], data.Position[1]);
-        npcInstance.SetAIActive(data.AiEnabled);
+        if (data.Position != null && data.Position.Length == 2)
+            instance.Position = new Vector2(data.Position[0], data.Position[1]);
 
-        AddChild(npcInstance);
-    }
+        // Configura NPC
+        if (instance is Npc npc)
+        {
+            npc.SpriteSheetRows = data.SpriteSheetRows;
+            npc.SpriteSheetCols = data.SpriteSheetCols;
+            npc.SpriteSheetWidth = data.SpriteSheetWidth;
+            npc.SpriteSheetHeight = data.SpriteSheetHeight;
+            npc.DialogTimelineName = data.DialogTimelineName;
+            npc.CharacterResourcePath = data.CharacterResourcePath;
+            npc.PlayerResourcePath = data.PlayerResourcePath;
+            npc.SpriteSheetPath = data.SpriteSheetPath;
+            npc.SetAIActive(data.AiEnabled);
+        }
+        // Configura Player
+        else if (instance is Player player)
+        {
+            if (data.BaseSpeed > 0) player.BaseSpeed = data.BaseSpeed;
 
-    private class NpcData
-    {
-        public int SpriteSheetRows { get; set; }
-        public int SpriteSheetCols { get; set; }
-        public int SpriteSheetWidth { get; set; }
-        public int SpriteSheetHeight { get; set; }
-        public string DialogTimelineName { get; set; }
-        public string CharacterResourcePath { get; set; }
-        public string PlayerResourcePath { get; set; }
-        public string SpriteSheetPath { get; set; }
-        public float[] Position { get; set; }
-        public bool AiEnabled { get; set; }  
+            if (!string.IsNullOrEmpty(data.PlayerSpriteSheetPath))
+            {
+                player.SpriteSheetPath = data.PlayerSpriteSheetPath;
+                player.SpriteHFrames = data.SpriteHFrames > 0 ? data.SpriteHFrames : 8;
+                player.SpriteVFrames = data.SpriteVFrames > 0 ? data.SpriteVFrames : 9;
+                player.ApplySprite();
+            }
+
+            if (!string.IsNullOrEmpty(data.CrosshairPath))
+            {
+                player.CrosshairPath = data.CrosshairPath;
+                var crossNode = player.GetNodeOrNull<Sprite2D>("Crosshair");
+                if (crossNode != null)
+                {
+                    var crossTex = GD.Load<Texture2D>(player.CrosshairPath);
+                    if (crossTex != null)
+                        crossNode.Texture = crossTex;
+                    crossNode.Visible = false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(data.ArrowScenePath))
+            {
+                var arrowScene = GD.Load<PackedScene>(data.ArrowScenePath);
+                if (arrowScene != null)
+                {
+                    player.ArrowScene = arrowScene;
+                    player.ArrowSpriteSheetPath = data.ArrowSpriteSheetPath;
+                }
+            }
+        }
+        AddChild(instance);
     }
 }

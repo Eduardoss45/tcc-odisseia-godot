@@ -21,23 +21,33 @@ public partial class NpcAI : Node
 
         player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
         if (player == null)
-            GD.PrintErr("Player não encontrado em /root/World/Player");
+        {
+            player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
+            if (player == null)
+                return;
+        }
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (npc == null || player == null || !npc.AiEnabled)
+        if (npc == null || !npc.AiEnabled)
             return;
+
+        if (player == null)
+        {
+            player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
+            if (player == null)
+                return;
+        }
 
         float distanceToPlayer = npc.Position.DistanceTo(player.Position);
         Vector2 velocity = Vector2.Zero;
 
         if (distanceToPlayer <= DetectionRange && distanceToPlayer > StopRange)
-        {
             velocity = (player.Position - npc.Position).Normalized() * Speed;
-        }
 
         npc.SetVelocity(velocity);
         npc.MoveAndSlide();
     }
+
 }
