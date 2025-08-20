@@ -1,7 +1,6 @@
 .import/
 .export/
 /android/
-addons/dialogic/
 *.tmp
 *.temp
 *.log
