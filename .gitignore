@@ -1,12 +1,6 @@
-.import/
-.export/
-/android/
-addons/dialogic/
 *.tmp
 *.temp
 *.log
-*.import
-*.godot
 *.godot.tmp
 *.pck
 *.zip
