@@ -6,7 +6,6 @@ addons/dialogic/
 *.temp
 *.log
 *.import
-*.godot
 *.godot.tmp
 *.pck
 *.zip
