@@ -5,13 +5,11 @@ using System.Linq;
 
 public partial class Player : CharacterBody2D
 {
-	// MOVIMENTO
 	[Export] public float BaseSpeed = 200.0f;
 	[Export] public float DashBonus = 200.0f;
 	[Export] public float DashDuration = 0.3f;
 	[Export] public float DashCooldown = 2.0f;
 
-	// RECURSOS DINÂMICOS
 	[Export] public string SpriteSheetPath { get; set; } = "";
 	[Export] public int SpriteHFrames { get; set; } = 8;
 	[Export] public int SpriteVFrames { get; set; } = 9;
@@ -27,6 +25,7 @@ public partial class Player : CharacterBody2D
 	private Camera2D camera;
 	private Sprite2D crosshair;
 
+	private Vector2 lastAttackDir = Vector2.Zero;
 	private bool isAiming = false;
 	private Queue<int> directionHistory = new Queue<int>();
 	private const int MaxHistorySize = 8;
@@ -41,12 +40,15 @@ public partial class Player : CharacterBody2D
 
 	public override void _Ready()
 	{
-		// Referências
 		sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 		camera = GetNodeOrNull<Camera2D>("Camera2D");
 		crosshair = GetNodeOrNull<Sprite2D>("Crosshair");
 
-		// CARREGA SPRITESHEET DINÂMICO
+		var hitbox = GD.Load<PackedScene>("res://Cenas/Hitbox.tscn");
+		var playerHitbox = hitbox.Instantiate<Node2D>();
+		AddChild(playerHitbox);
+		playerHitbox.Position = Vector2.Zero;
+
 		if (sprite != null && !string.IsNullOrEmpty(SpriteSheetPath))
 		{
 			var tex = GD.Load<Texture2D>(SpriteSheetPath);
@@ -58,15 +60,10 @@ public partial class Player : CharacterBody2D
 			}
 		}
 
-		// CARREGA CROSSHAIR
-		if (crosshair != null)
+		if (crosshair != null && !string.IsNullOrEmpty(CrosshairPath))
 		{
-			if (!string.IsNullOrEmpty(CrosshairPath))
-			{
-				var crossTex = GD.Load<Texture2D>(CrosshairPath);
-				if (crossTex != null)
-					crosshair.Texture = crossTex;
-			}
+			var crossTex = GD.Load<Texture2D>(CrosshairPath);
+			if (crossTex != null) crosshair.Texture = crossTex;
 			crosshair.Visible = false;
 		}
 
@@ -85,7 +82,6 @@ public partial class Player : CharacterBody2D
 			return;
 		}
 
-		// DASH
 		if (dashTimeLeft > 0)
 		{
 			dashTimeLeft -= (float)delta;
@@ -100,7 +96,6 @@ public partial class Player : CharacterBody2D
 			dashCooldownLeft = DashCooldown;
 		}
 
-		// MOVIMENTO
 		Vector2 direction = Vector2.Zero;
 		if (Input.IsKeyPressed(Key.W)) direction.Y -= 1;
 		if (Input.IsKeyPressed(Key.S)) direction.Y += 1;
@@ -125,33 +120,24 @@ public partial class Player : CharacterBody2D
 		}
 
 		if (isAiming && @event.IsActionPressed("shoot"))
-		{
 			ShootArrow();
-		}
 	}
 
 	private void ShootArrow()
 	{
-		if (ArrowScene == null || crosshair == null)
-		{
-			GD.PrintErr("ArrowScene ou Crosshair estão nulos!");
-			return;
-		}
+		if (ArrowScene == null || crosshair == null) return;
+
+		Vector2 dir = (crosshair.GlobalPosition - GlobalPosition).Normalized();
+		lastAttackDir = dir;
 
 		var arrow = ArrowScene.Instantiate<Arrow>();
 		GetParent().AddChild(arrow);
 
-		Vector2 dir = (crosshair.GlobalPosition - GlobalPosition).Normalized();
 		arrow.GlobalPosition = GlobalPosition + dir * 20;
 		arrow.velocity = dir * 400;
 
-		if (string.IsNullOrEmpty(ArrowSpriteSheetPath))
+		if (!string.IsNullOrEmpty(ArrowSpriteSheetPath))
 		{
-			GD.PrintErr("ArrowSpriteSheetPath não definido!");
-		}
-		else
-		{
-			GD.Print($"Aplicando Arrow Sprite: {ArrowSpriteSheetPath}");
 			arrow.SpritePath = ArrowSpriteSheetPath;
 			arrow.ApplySprite();
 		}
@@ -159,27 +145,18 @@ public partial class Player : CharacterBody2D
 		arrow.UpdateRotation();
 		arrow.CollisionMask &= ~(1u << (int)PlayerLayer);
 
-		GD.Print($"Arrow disparada. Pos: {arrow.GlobalPosition}, Vel: {arrow.velocity}");
+		int dirIndex = GetDirectionIndex(lastAttackDir);
+		sprite.FrameCoords = new Vector2I(dirIndex, 0);
 	}
 
-
-
-
-
-
-	// AUXILIARES
 	private void UpdateCameraZoom(double delta, Vector2 direction)
 	{
 		if (camera == null) return;
 
 		bool isMoving = direction != Vector2.Zero;
-		Vector2 targetZoom;
-		if (isDashing && isMoving)
-			targetZoom = new Vector2(1.6f, 1.6f);
-		else if (isMoving)
-			targetZoom = new Vector2(1.5f, 1.5f);
-		else
-			targetZoom = new Vector2(1f, 1f);
+		Vector2 targetZoom = isDashing && isMoving ? new Vector2(1.6f, 1.6f) :
+							   isMoving ? new Vector2(1.5f, 1.5f) :
+							   new Vector2(1f, 1f);
 
 		camera.Zoom = camera.Zoom.Lerp(targetZoom, 5f * (float)delta);
 	}
@@ -197,13 +174,14 @@ public partial class Player : CharacterBody2D
 			directionHistory.Enqueue(dirIndex);
 			if (directionHistory.Count > MaxHistorySize) directionHistory.Dequeue();
 
+			lastAttackDir = direction;
+
 			frameTimer += (float)delta;
 			if (frameTimer >= frameDuration)
 			{
 				frameTimer = 0f;
 				animationFrame = (animationFrame + 1) % sprite.Hframes;
 			}
-
 			sprite.FrameCoords = new Vector2I(animationFrame, dirIndex + 1);
 		}
 		else
@@ -211,7 +189,8 @@ public partial class Player : CharacterBody2D
 			Velocity = Vector2.Zero;
 			frameTimer = 0f;
 			animationFrame = 0;
-			int idleDir = GetMostFrequentDirection();
+
+			int idleDir = GetIdleDirection();
 			sprite.FrameCoords = new Vector2I(idleDir, 0);
 		}
 	}
@@ -250,11 +229,13 @@ public partial class Player : CharacterBody2D
 				spriteNode.Hframes = SpriteHFrames;
 				spriteNode.Vframes = SpriteVFrames;
 			}
-			else
-			{
-				GD.PrintErr($"Falha ao carregar Player Texture: {SpriteSheetPath}");
-			}
 		}
 	}
 
+	private int GetIdleDirection()
+	{
+		if (isAiming && lastAttackDir != Vector2.Zero)
+			return GetDirectionIndex(lastAttackDir);
+		return GetMostFrequentDirection();
+	}
 }

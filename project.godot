@@ -72,6 +72,10 @@ translation/file_mode=1
 translation/translation_folder=""
 translation/save_mode=0
 translation/add_separator=false
+layout/style_directory={
+"": "res://Styles/Clouds.tres",
+"Clouds": "res://Styles/Clouds.tres"
+}
 
 [display]
 

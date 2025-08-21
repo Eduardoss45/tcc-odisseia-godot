@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="DialogicStyle" load_steps=9 format=3 uid="uid://w8u0g762g53p"]
 
 [ext_resource type="PackedScene" uid="uid://syki6k0e6aac" path="res://addons/dialogic/Modules/DefaultLayoutParts/Base_TextBubble/text_bubble_base.tscn" id="1_udyxs"]
-[ext_resource type="Script" uid="uid://7c2o2s7cmfoh" path="res://addons/dialogic/Resources/dialogic_style_layer.gd" id="2_74w1q"]
+[ext_resource type="Script" uid="uid://bwg6yncmh2cml" path="res://addons/dialogic/Resources/dialogic_style_layer.gd" id="2_74w1q"]
 [ext_resource type="PackedScene" uid="uid://cn674foxwedqu" path="res://addons/dialogic/Modules/DefaultLayoutParts/Layer_Input/full_advance_input_layer.tscn" id="3_4espy"]
 [ext_resource type="PackedScene" uid="uid://d2it0xiap3gnt" path="res://addons/dialogic/Modules/DefaultLayoutParts/Layer_Textbubble/text_bubble_layer.tscn" id="4_62mpn"]
-[ext_resource type="Script" uid="uid://bk3iiat8on4y2" path="res://addons/dialogic/Resources/dialogic_style.gd" id="5_ku4ra"]
+[ext_resource type="Script" uid="uid://dv08k6ljua6fm" path="res://addons/dialogic/Resources/dialogic_style.gd" id="5_ku4ra"]
 
 [sub_resource type="Resource" id="Resource_wq7d1"]
 script = ExtResource("2_74w1q")

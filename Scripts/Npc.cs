@@ -5,20 +5,16 @@ using System.Linq;
 
 public partial class Npc : CharacterBody2D
 {
-    // NODES
     private Node? dialogic;
     private Sprite2D sprite;
     private Node2D player;
 
-    // AI CONFIG
     [Export] public bool AiEnabled { get; set; } = false;
     [Export] public float Speed { get; set; } = 80f;
     [Export] public float DetectionRange { get; set; } = 200f;
     [Export] public float StopRange { get; set; } = 32f;
     private Vector2 velocity = Vector2.Zero;
 
-
-    // SPRITE / ANIMATION
     [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/npc_spritesheet.png";
     [Export] public int SpriteSheetRows { get; set; } = 8;
     [Export] public int SpriteSheetCols { get; set; } = 9;
@@ -31,19 +27,13 @@ public partial class Npc : CharacterBody2D
     private Queue<int> directionHistory = new Queue<int>();
     private const int MaxHistorySize = 8;
 
-
-    // DIALOG
     [Export] public string DialogTimelineName { get; set; } = "npc_dialogo_1";
     [Export] public string CharacterResourcePath { get; set; } = "res://Chars/Npc.dch";
     [Export] public string PlayerResourcePath { get; set; } = "res://Chars/Player.dch";
-
     private bool isConnected = false;
 
-
-    // GODOT CALLBACKS
     public override void _Ready()
     {
-        // Sprite e animação
         sprite = GetNode<Sprite2D>("Sprite2D");
         var texture = GD.Load<Texture2D>(SpriteSheetPath);
         if (texture == null)
@@ -58,13 +48,11 @@ public partial class Npc : CharacterBody2D
         InitializeAnimationRects();
         SetAnimationFrame(0, 0);
 
-        // Dialogic
         dialogic = GetNodeOrNull("/root/Dialogic");
         if (dialogic == null)
             GD.PrintErr("Dialogic não encontrado.");
 
-        // Area2D
-        Area2D? clickArea = GetNodeOrNull<Area2D>("Area2D");
+        var clickArea = GetNodeOrNull<Area2D>("Area2D");
         if (clickArea != null)
             clickArea.Connect("input_event", new Callable(this, nameof(OnClicked)));
         else
@@ -73,24 +61,20 @@ public partial class Npc : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        // Captura Player dinamicamente
         if (player == null)
             player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
 
-        // Atualiza IA apenas se o Player existe e AI está ativa
         if (AiEnabled && player != null)
             UpdateAI();
         else
-            velocity = Vector2.Zero; // mantém o NPC visível e parado
+            velocity = Vector2.Zero;
 
-        MoveAndSlide();      // sempre chama MoveAndSlide
-        UpdateAnimation(delta); // animação continua rodando
+        Velocity = velocity;
+        MoveAndSlide();
+
+        UpdateAnimation(delta);
     }
 
-
-
-
-    // AI / MOVIMENTO
     private void UpdateAI()
     {
         if (player == null)
@@ -100,26 +84,22 @@ public partial class Npc : CharacterBody2D
         }
 
         float distanceToPlayer = Position.DistanceTo(player.Position);
+        float safeStopRange = StopRange + 6f; 
 
-        if (distanceToPlayer <= DetectionRange && distanceToPlayer > StopRange)
+        if (distanceToPlayer <= DetectionRange && distanceToPlayer > safeStopRange)
+        {
             velocity = (player.Position - Position).Normalized() * Speed;
+        }
         else
+        {
             velocity = Vector2.Zero;
-
-        // Atualiza o CharacterBody2D
-        Velocity = velocity;
+        }
     }
 
-
-
-    // ANIMAÇÃO
     private void UpdateAnimation(double delta)
     {
-        velocity = Velocity;
         bool isMoving = velocity.Length() > 0;
-
-        int dirIndex = isMoving ? GetDirectionIndex(velocity) : GetMostFrequentDirection();
-        dirIndex = Math.Clamp(dirIndex, 0, SpriteSheetRows - 1);
+        int dirIndex = GetDirectionIndex(velocity);
 
         if (isMoving)
         {
@@ -135,9 +115,9 @@ public partial class Npc : CharacterBody2D
             animationFrame = 0;
         }
 
+        dirIndex = Math.Clamp(dirIndex, 0, SpriteSheetRows - 1);
         sprite.FrameCoords = new Vector2I(animationFrame, dirIndex);
     }
-
 
     private void InitializeAnimationRects()
     {
@@ -160,33 +140,19 @@ public partial class Npc : CharacterBody2D
         sprite.RegionRect = animationRects[row, col];
     }
 
-    private int GetDirectionIndex(Vector2 velocity)
+    private int GetDirectionIndex(Vector2 vel)
     {
-        if (velocity == Vector2.Zero)
+        if (vel == Vector2.Zero)
             return 0;
 
-        double angle = Math.Atan2(velocity.Y, velocity.X);
+        double angle = Math.Atan2(vel.Y, vel.X);
         double degrees = angle * (180 / Math.PI);
-
-        if (degrees < 0)
-            degrees += 360;
+        if (degrees < 0) degrees += 360;
 
         int sector = (int)Math.Round(degrees / 45.0) % 8;
-        int[] spriteMap = {
-        7, // 0 = direita
-        8, // 1 = baixo-direita
-        1, // 2 = baixo
-        2, // 3 = baixo-esquerda
-        3, // 4 = esquerda
-        4, // 5 = cima-esquerda
-        5, // 6 = cima
-        6  // 7 = cima-direita
-    };
-
+        int[] spriteMap = { 7, 8, 1, 2, 3, 4, 5, 6 };
         return spriteMap[sector];
     }
-
-
 
     private int GetMostFrequentDirection()
     {
@@ -198,9 +164,6 @@ public partial class Npc : CharacterBody2D
             .OrderByDescending(g => g.Count())
             .First().Key;
     }
-
-
-    // DIÁLOGO
 
     private void OnClicked(Node viewport, InputEvent @event, int shapeIdx)
     {
@@ -221,23 +184,23 @@ public partial class Npc : CharacterBody2D
         }
 
         string timelinePath = $"res://Chars/{DialogTimelineName}.dtl";
-        Resource? timelineResource = GD.Load<Resource>(timelinePath);
+        var timelineResource = GD.Load<Resource>(timelinePath);
         if (timelineResource == null)
         {
             GD.PrintErr($"Falha ao carregar timeline: {timelinePath}");
             return;
         }
 
-        Resource? characterResource = GD.Load<Resource>(CharacterResourcePath);
-        Resource? playerResource = GD.Load<Resource>(PlayerResourcePath);
+        var characterResource = GD.Load<Resource>(CharacterResourcePath);
+        var playerResource = GD.Load<Resource>(PlayerResourcePath);
         if (characterResource == null || playerResource == null)
         {
             GD.PrintErr("Falha ao carregar personagem .dch");
             return;
         }
 
-        Node2D? marker = GetNodeOrNull<Node2D>("Marker2D");
-        Node2D? playerMarker = GetNode<Node2D>("/root/World/Player/Marker2D");
+        var marker = GetNodeOrNull<Node2D>("Marker2D");
+        var playerMarker = GetNode<Node2D>("/root/World/Player/Marker2D");
         if (marker == null || playerMarker == null)
         {
             GD.PrintErr("Marker2D não encontrado.");
@@ -245,7 +208,7 @@ public partial class Npc : CharacterBody2D
         }
 
         Variant layoutVariant = dialogic.Call("start", timelineResource);
-        CanvasLayer? layout = layoutVariant.As<CanvasLayer>();
+        CanvasLayer layout = layoutVariant.As<CanvasLayer>();
         if (layout == null)
         {
             GD.PrintErr("Layout retornado não é um CanvasLayer válido.");
@@ -271,8 +234,6 @@ public partial class Npc : CharacterBody2D
         }
     }
 
-
-    // UTILITÁRIOS
     public void SetAIActive(bool active)
     {
         AiEnabled = active;
