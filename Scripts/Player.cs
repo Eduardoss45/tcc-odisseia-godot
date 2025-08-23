@@ -9,6 +9,9 @@ public partial class Player : CharacterBody2D
 	[Export] public float DashBonus = 200.0f;
 	[Export] public float DashDuration = 0.3f;
 	[Export] public float DashCooldown = 2.0f;
+	[Export] public float AttackFaceLock = 0.2f; // quanto tempo manter a direção travada no ataque
+	private float attackFaceTimer = 0f;
+	private Vector2 attackDir = Vector2.Zero;
 
 	[Export] public string SpriteSheetPath { get; set; } = "";
 	[Export] public int SpriteHFrames { get; set; } = 8;
@@ -74,6 +77,9 @@ public partial class Player : CharacterBody2D
 	{
 		if (sprite == null) return;
 
+		if (attackFaceTimer > 0f)
+			attackFaceTimer -= (float)delta;
+
 		if (isAiming)
 		{
 			Velocity = Vector2.Zero;
@@ -121,6 +127,9 @@ public partial class Player : CharacterBody2D
 
 		if (isAiming && @event.IsActionPressed("shoot"))
 			ShootArrow();
+
+		if (@event.IsActionPressed("attack"))
+			FaceAttackDirection();
 	}
 
 	private void ShootArrow()
@@ -193,6 +202,16 @@ public partial class Player : CharacterBody2D
 			int idleDir = GetIdleDirection();
 			sprite.FrameCoords = new Vector2I(idleDir, 0);
 		}
+		
+		if (attackFaceTimer > 0f)
+		{
+			int attackIndex = GetDirectionIndex(attackDir);
+
+			if (Velocity == Vector2.Zero)
+				sprite.FrameCoords = new Vector2I(attackIndex, 0);          // idle na direção do ataque
+			else
+				sprite.FrameCoords = new Vector2I(animationFrame, attackIndex + 1); // andando na direção do ataque
+		}
 	}
 
 	private int GetDirectionIndex(Vector2 dir)
@@ -237,5 +256,18 @@ public partial class Player : CharacterBody2D
 		if (isAiming && lastAttackDir != Vector2.Zero)
 			return GetDirectionIndex(lastAttackDir);
 		return GetMostFrequentDirection();
+	}
+
+	private void FaceAttackDirection()
+	{
+		Vector2 dir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
+		if (dir == Vector2.Zero) return;
+
+		lastAttackDir = dir;
+		attackDir = dir;
+		attackFaceTimer = AttackFaceLock;
+
+		int dirIndex = GetDirectionIndex(dir);
+		sprite.FrameCoords = new Vector2I(dirIndex, 0);
 	}
 }
