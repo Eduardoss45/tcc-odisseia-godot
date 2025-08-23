@@ -27,5 +27,11 @@ scale = Vector2(1, 0.984)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_cex2s")
 
+[node name="DashArea" type="Node2D" parent="."]
+position = Vector2(0, -20)
+scale = Vector2(1, 0.984)
+
+[node name="Polygon2D" type="Polygon2D" parent="DashArea"]
+
 [node name="NpcAI" type="Node" parent="."]
 script = ExtResource("2_3eix5")

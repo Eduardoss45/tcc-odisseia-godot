@@ -12,3 +12,6 @@ res://Scripts/NpcAI.cs
 res://Scripts/Arrow.cs
 res://Scripts/Game.cs
 res://Scripts/BtnStart.cs
+res://Scripts/MobAI.cs
+res://Scripts/Mob.cs
+res://Cenas/Npc.tscn
