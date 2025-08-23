@@ -36,18 +36,15 @@ public partial class NpcAI : Node
         if (player == null)
         {
             player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
-            if (player == null)
-                return;
+            if (player == null) return;
         }
 
         float distanceToPlayer = npc.Position.DistanceTo(player.Position);
-        Vector2 velocity = Vector2.Zero;
+        Vector2 vel = Vector2.Zero;
 
         if (distanceToPlayer <= DetectionRange && distanceToPlayer > StopRange)
-            velocity = (player.Position - npc.Position).Normalized() * Speed;
-
-        npc.SetVelocity(velocity);
-        npc.MoveAndSlide();
+            vel = (player.Position - npc.Position).Normalized() * Speed;
+            
+        npc.SetVelocity(vel);
     }
-
 }
