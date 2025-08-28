@@ -7,12 +7,9 @@ public partial class StaticNpc : CharacterBody2D
     private Sprite2D sprite;
 
     [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/Staticnpc_spritesheet.png";
-    [Export] public int SpriteSheetRows { get; set; } = 8;
-    [Export] public int SpriteSheetCols { get; set; } = 9;
-    [Export] public int SpriteSheetWidth { get; set; } = 512;
-    [Export] public int SpriteSheetHeight { get; set; } = 576;
+    [Export] public int SpriteSheetRows { get; set; } = 8; // Vframes
+    [Export] public int SpriteSheetCols { get; set; } = 9; // Hframes
 
-    private Rect2[,] animationRects;
     private int animationFrame = 0;
     private float frameTimer = 0f;
 
@@ -30,11 +27,11 @@ public partial class StaticNpc : CharacterBody2D
             GD.PrintErr($"Falha ao carregar textura: {SpriteSheetPath}");
             return;
         }
-        sprite.Texture = texture;
-        sprite.Hframes = SpriteSheetCols;
-        sprite.Vframes = SpriteSheetRows;
 
-        InitializeAnimationRects();
+        sprite.Texture = texture;
+        sprite.Hframes = SpriteSheetCols; // divide em colunas
+        sprite.Vframes = SpriteSheetRows; // divide em linhas
+
         SetAnimationFrame(0, 0);
 
         dialogic = GetNodeOrNull("/root/Dialogic");
@@ -48,17 +45,6 @@ public partial class StaticNpc : CharacterBody2D
             GD.PrintErr("Area2D não encontrada no NPC.");
     }
 
-    private void InitializeAnimationRects()
-    {
-        int frameWidth = SpriteSheetWidth / SpriteSheetCols;
-        int frameHeight = SpriteSheetHeight / SpriteSheetRows;
-        animationRects = new Rect2[SpriteSheetRows, SpriteSheetCols];
-
-        for (int row = 0; row < SpriteSheetRows; row++)
-            for (int col = 0; col < SpriteSheetCols; col++)
-                animationRects[row, col] = new Rect2(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
-    }
-
     public void SetAnimationFrame(int row, int col)
     {
         if (row < 0 || row >= SpriteSheetRows || col < 0 || col >= SpriteSheetCols)
@@ -66,7 +52,9 @@ public partial class StaticNpc : CharacterBody2D
             GD.PrintErr("Frame fora do intervalo da matriz.");
             return;
         }
-        sprite.RegionRect = animationRects[row, col];
+
+        int frameIndex = (row * SpriteSheetCols) + col;
+        sprite.Frame = frameIndex;
     }
 
     private void OnClicked(Node viewport, InputEvent @event, int shapeIdx)
@@ -86,6 +74,8 @@ public partial class StaticNpc : CharacterBody2D
             GD.PrintErr("Dialogic node não encontrado!");
             return;
         }
+
+        SetAnimationFrame(0, 1);
 
         string timelinePath = $"res://Chars/{DialogTimelineName}.dtl";
         var timelineResource = GD.Load<Resource>(timelinePath);
@@ -136,5 +126,6 @@ public partial class StaticNpc : CharacterBody2D
             dialogic.Disconnect("timeline_ended", new Callable(this, nameof(OnDialogFinished)));
             isConnected = false;
         }
+        SetAnimationFrame(0, 0);
     }
 }

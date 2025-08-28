@@ -10,7 +10,7 @@ safe_margin = 0.001
 script = ExtResource("2_lo6u0")
 
 [node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(0, -20)
+position = Vector2(5, -15)
 scale = Vector2(1, 0.984)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

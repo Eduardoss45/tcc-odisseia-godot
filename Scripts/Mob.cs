@@ -1,30 +1,44 @@
 using Godot;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 public partial class Mob : CharacterBody2D
 {
     private Sprite2D sprite;
     private Node2D player;
 
-    [Export] public bool AiEnabled { get; set; } = false;
-    [Export] public float Speed { get; set; } = 80f;
-    [Export] public float DetectionRange { get; set; } = 200f;
+    [Export] public float Speed { get; set; } = 200f;
+    [Export] public float DetectionRange { get; set; } = 100f;
     [Export] public float StopRange { get; set; } = 32f;
+    [Export] public int SpriteSheetRows { get; set; } = 2;
+    [Export] public int SpriteSheetCols { get; set; } = 4;
+    [Export] public int SpriteSheetWidth { get; set; } = 1600;
+    [Export] public int SpriteSheetHeight { get; set; } = 600;
+    public void SetAIActive(bool active) => AiEnabled = active;
+
+
+    // AI
+    [Export] public bool AiEnabled { get; set; } = true;
+
     private Vector2 velocity = Vector2.Zero;
 
-    [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/Mob_spritesheet.png";
-    [Export] public int SpriteSheetRows { get; set; } = 8;
-    [Export] public int SpriteSheetCols { get; set; } = 9;
-    [Export] public int SpriteSheetWidth { get; set; } = 512;
-    [Export] public int SpriteSheetHeight { get; set; } = 576;
+    // Dash
+    private DashController dashController;
 
-    private Rect2[,] animationRects;
-    private int animationFrame = 0;
+    // Animação 4x2
+    [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/mob_spritesheet.png";
+    private int frameX = 0;
     private float frameTimer = 0f;
-    private Queue<int> directionHistory = new Queue<int>();
-    private const int MaxHistorySize = 8;
+    private int row = 1; // direita por padrão
+    private const int Cols = 4;
+    private const int Rows = 2;
+    [Export] public int FrameWidth { get; set; } = 64;
+    [Export] public int FrameHeight { get; set; } = 64;
+
+    // Stats
+    [Export] public int MaxHealth { get; set; } = 100;
+    private int currentHealth;
+
+    [Export] public float AnimationSpeed { get; set; } = 8f; // frames por segundo
 
     public override void _Ready()
     {
@@ -35,12 +49,23 @@ public partial class Mob : CharacterBody2D
             GD.PrintErr($"Falha ao carregar textura: {SpriteSheetPath}");
             return;
         }
-        sprite.Texture = texture;
-        sprite.Hframes = SpriteSheetCols;
-        sprite.Vframes = SpriteSheetRows;
 
-        InitializeAnimationRects();
-        SetAnimationFrame(0, 0);
+        sprite.Texture = texture;
+        sprite.RegionEnabled = true;
+        sprite.RegionRect = new Rect2(0, 0, FrameWidth, FrameHeight);
+
+        // Dash
+        dashController = new DashController
+        {
+            DashSpeed = 300f,
+            DashChargeTime = 0.5f,
+            DashCooldown = 2f,
+            StopDistance = 24f,
+            DashDuration = 0.8f
+        };
+
+        // Vida inicial
+        currentHealth = MaxHealth;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -48,29 +73,18 @@ public partial class Mob : CharacterBody2D
         if (player == null)
             player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
 
-        if (AiEnabled && player != null)
-            UpdateAI();
-        else
-            velocity = Vector2.Zero;
-
-        Velocity = velocity;
-        MoveAndSlide();
-
-        UpdateAnimation(delta);
-    }
-
-    private void UpdateAI()
-    {
-        if (player == null)
+        if (!AiEnabled || player == null)
         {
             velocity = Vector2.Zero;
+            Velocity = velocity;
+            MoveAndSlide();
             return;
         }
 
-        float distanceToPlayer = Position.DistanceTo(player.Position);
-        float safeStopRange = StopRange + 6f;
 
-        if (distanceToPlayer <= DetectionRange && distanceToPlayer > safeStopRange)
+        // AI simples: seguir player
+        float distance = Position.DistanceTo(player.Position);
+        if (distance <= DetectionRange && distance > StopRange)
         {
             velocity = (player.Position - Position).Normalized() * Speed;
         }
@@ -78,79 +92,55 @@ public partial class Mob : CharacterBody2D
         {
             velocity = Vector2.Zero;
         }
+
+        // Atualiza dash
+        dashController.Update((float)delta, Position, player.Position);
+        if (dashController.IsDashing)
+            velocity = dashController.Velocity;
+
+        // Movimento
+        Velocity = velocity;
+        MoveAndSlide();
+
+        // Animação
+        UpdateAnimation(delta);
     }
 
     private void UpdateAnimation(double delta)
     {
-        bool isMoving = velocity.Length() > 0;
-        int dirIndex = GetDirectionIndex(velocity);
+        // Prioridade horizontal: decide linha
+        if (velocity.X < 0)
+            row = 0; // esquerda
+        else if (velocity.X > 0)
+            row = 1; // direita
 
-        if (isMoving)
+        if (velocity.Length() > 0)
         {
             frameTimer += (float)delta;
-            if (frameTimer >= 0.1f)
+            if (frameTimer >= 1.0f / AnimationSpeed)
             {
                 frameTimer = 0f;
-                animationFrame = (animationFrame + 1) % SpriteSheetCols;
+                frameX = (frameX + 1) % Cols;
             }
         }
         else
         {
-            animationFrame = 0;
+            frameX = 0;
         }
 
-        dirIndex = Math.Clamp(dirIndex, 0, SpriteSheetRows - 1);
-        sprite.FrameCoords = new Vector2I(animationFrame, dirIndex);
+        sprite.RegionRect = new Rect2(frameX * FrameWidth, row * FrameHeight, FrameWidth, FrameHeight);
     }
 
-    private void InitializeAnimationRects()
+    // --- Sistema de Vida ---
+    public void TakeDamage(int amount)
     {
-        int frameWidth = SpriteSheetWidth / SpriteSheetCols;
-        int frameHeight = SpriteSheetHeight / SpriteSheetRows;
-        animationRects = new Rect2[SpriteSheetRows, SpriteSheetCols];
-
-        for (int row = 0; row < SpriteSheetRows; row++)
-            for (int col = 0; col < SpriteSheetCols; col++)
-                animationRects[row, col] = new Rect2(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
+        currentHealth -= amount;
+        if (currentHealth <= 0)
+            Die();
     }
 
-    public void SetAnimationFrame(int row, int col)
+    private void Die()
     {
-        if (row < 0 || row >= SpriteSheetRows || col < 0 || col >= SpriteSheetCols)
-        {
-            GD.PrintErr("Frame fora do intervalo da matriz.");
-            return;
-        }
-        sprite.RegionRect = animationRects[row, col];
-    }
-
-    private int GetDirectionIndex(Vector2 vel)
-    {
-        if (vel == Vector2.Zero)
-            return 0;
-
-        double angle = Math.Atan2(vel.Y, vel.X);
-        double degrees = angle * (180 / Math.PI);
-        if (degrees < 0) degrees += 360;
-
-        int sector = (int)Math.Round(degrees / 45.0) % 8;
-        int[] spriteMap = { 7, 8, 1, 2, 3, 4, 5, 6 };
-        return spriteMap[sector];
-    }
-
-    private int GetMostFrequentDirection()
-    {
-        if (directionHistory.Count == 0)
-            return 0;
-
-        return directionHistory
-            .GroupBy(x => x)
-            .OrderByDescending(g => g.Count())
-            .First().Key;
-    }
-
-    public void SetAIActive(bool active)
-    {
-        AiEnabled = active;
+        QueueFree(); // Remove mob da cena
     }
 }

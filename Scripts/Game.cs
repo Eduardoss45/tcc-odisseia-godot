@@ -23,6 +23,9 @@ public class EntityData
     public string CrosshairPath { get; set; }
     public string ArrowScenePath { get; set; }
     public string ArrowSpriteSheetPath { get; set; }
+    public int FrameWidth { get; set; }
+    public int FrameHeight { get; set; }
+
 }
 
 public partial class Game : Node2D
@@ -66,26 +69,23 @@ public partial class Game : Node2D
         if (data.Position != null && data.Position.Length == 2)
             instance.Position = new Vector2(data.Position[0], data.Position[1]);
 
-        // Configura Npc
-        if (instance is Npc npc)
+        // Configura Mob
+        if (instance is Mob mob)
         {
-            npc.SpriteSheetRows = data.SpriteSheetRows;
-            npc.SpriteSheetCols = data.SpriteSheetCols;
-            npc.SpriteSheetWidth = data.SpriteSheetWidth;
-            npc.SpriteSheetHeight = data.SpriteSheetHeight;
-            npc.DialogTimelineName = data.DialogTimelineName;
-            npc.CharacterResourcePath = data.CharacterResourcePath;
-            npc.PlayerResourcePath = data.PlayerResourcePath;
-            npc.SpriteSheetPath = data.SpriteSheetPath;
-            npc.SetAIActive(data.AiEnabled);
+            mob.SpriteSheetRows = data.SpriteSheetRows;
+            mob.SpriteSheetCols = data.SpriteSheetCols;
+            mob.SpriteSheetWidth = data.SpriteSheetWidth;
+            mob.SpriteSheetHeight = data.SpriteSheetHeight;
+            mob.SpriteSheetPath = data.SpriteSheetPath;
+            mob.FrameWidth = data.FrameWidth;   // <-- agora vem do JSON
+            mob.FrameHeight = data.FrameHeight;
+            mob.SetAIActive(data.AiEnabled);
         }
         // Configura StaticNpc
         else if (instance is StaticNpc staticNpc)
         {
             staticNpc.SpriteSheetRows = data.SpriteSheetRows;
             staticNpc.SpriteSheetCols = data.SpriteSheetCols;
-            staticNpc.SpriteSheetWidth = data.SpriteSheetWidth;
-            staticNpc.SpriteSheetHeight = data.SpriteSheetHeight;
             staticNpc.DialogTimelineName = data.DialogTimelineName;
             staticNpc.CharacterResourcePath = data.CharacterResourcePath;
             staticNpc.PlayerResourcePath = data.PlayerResourcePath;

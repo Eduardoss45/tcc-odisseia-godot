@@ -6,6 +6,7 @@ public class DashController
     public enum DashState { Ready, Charging, Dashing, Cooldown }
     public DashState State { get; private set; } = DashState.Ready;
 
+
     // --- Configuráveis ---
     public float DashSpeed { get; set; } = 300f;
     public float DashCooldown { get; set; } = 2f;
@@ -21,11 +22,12 @@ public class DashController
     private Vector2 dashDir = Vector2.Zero;
 
     public Vector2 Velocity { get; private set; } = Vector2.Zero;
+    public bool IsDashing => State == DashState.Dashing;
 
-    public void Update(float delta, Vector2 npcPos, Vector2 playerPos)
+    public void Update(float delta, Vector2 mobPos, Vector2 playerPos)
     {
         dashTimer -= delta;
-        float dist = npcPos.DistanceTo(playerPos);
+        float dist = mobPos.DistanceTo(playerPos);
 
         switch (State)
         {
@@ -34,12 +36,12 @@ public class DashController
                 {
                     State = DashState.Charging;
                     dashTimer = DashChargeTime;
-                    dashDir = (playerPos - npcPos).Normalized();
+                    dashDir = (playerPos - mobPos).Normalized();
                 }
                 else
                 {
                     // AI normal
-                    Velocity = (playerPos - npcPos).Normalized() * Speed;
+                    Velocity = (playerPos - mobPos).Normalized() * Speed;
                     if (dist <= StopRange)
                         Velocity = Vector2.Zero;
                 }
@@ -63,7 +65,7 @@ public class DashController
 
             case DashState.Cooldown:
                 // AI normal durante cooldown
-                Velocity = (playerPos - npcPos).Normalized() * Speed;
+                Velocity = (playerPos - mobPos).Normalized() * Speed;
                 if (dist <= StopRange)
                     Velocity = Vector2.Zero;
 

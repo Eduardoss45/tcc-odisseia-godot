@@ -7,15 +7,15 @@ public partial class MobAI : Node
     [Export] public float DetectionRange = 200f;
     [Export] public float StopRange = 32f;
 
-    private Npc npc;
+    private Mob mob;
     private Node2D player;
 
     public override void _Ready()
     {
-        npc = GetParent<Npc>();
-        if (npc == null)
+        mob = GetParent<Mob>();
+        if (mob == null)
         {
-            GD.PrintErr("MobAI precisa ser filho de um Node Npc");
+            GD.PrintErr("MobAI precisa ser filho de um Node Mob");
             return;
         }
 
@@ -30,7 +30,7 @@ public partial class MobAI : Node
 
     public override void _PhysicsProcess(double delta)
     {
-        if (npc == null || !npc.AiEnabled)
+        if (mob == null || !mob.AiEnabled)
             return;
 
         if (player == null)
@@ -40,14 +40,14 @@ public partial class MobAI : Node
                 return;
         }
 
-        float distanceToPlayer = npc.Position.DistanceTo(player.Position);
+        float distanceToPlayer = mob.Position.DistanceTo(player.Position);
         Vector2 velocity = Vector2.Zero;
 
         if (distanceToPlayer <= DetectionRange && distanceToPlayer > StopRange)
-            velocity = (player.Position - npc.Position).Normalized() * Speed;
+            velocity = (player.Position - mob.Position).Normalized() * Speed;
 
-        npc.SetVelocity(velocity);
-        npc.MoveAndSlide();
+        mob.SetVelocity(velocity);
+        mob.MoveAndSlide();
     }
 
 }

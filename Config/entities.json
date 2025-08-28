@@ -1,15 +1,14 @@
 [
   {
-    "ScenePath": "res://Cenas/Npc.tscn",
-    "SpriteSheetRows": 9,
-    "SpriteSheetCols": 8,
-    "SpriteSheetWidth": 512,
-    "SpriteSheetHeight": 576,
-    "DialogTimelineName": "npc_dialogo_1",
-    "CharacterResourcePath": "res://Chars/Npc.dch",
-    "PlayerResourcePath": "res://Chars/Player.dch",
-    "SpriteSheetPath": "res://Sprites/npc_spritesheet.png",
+    "ScenePath": "res://Cenas/Mob.tscn",
+    "SpriteSheetRows": 2,
+    "SpriteSheetCols": 4,
+    "SpriteSheetWidth": 400,
+    "SpriteSheetHeight": 150,
+    "SpriteSheetPath": "res://Sprites/javali_spritesheet.png",
     "Position": [200, 300],
+    "FrameWidth": 100,
+    "FrameHeight": 75,
     "AiEnabled": true
   },
   {
