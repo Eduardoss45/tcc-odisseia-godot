@@ -25,7 +25,11 @@ public class EntityData
     public string ArrowSpriteSheetPath { get; set; }
     public int FrameWidth { get; set; }
     public int FrameHeight { get; set; }
-
+    public string AttackSpriteSheetPath { get; set; }
+    public int AttackHFrames { get; set; }
+    public int AttackVFrames { get; set; }
+    public int AttackFrameWidth { get; set; }
+    public int AttackFrameHeight { get; set; }
 }
 
 public partial class Game : Node2D
@@ -125,6 +129,15 @@ public partial class Game : Node2D
                     player.ArrowScene = arrowScene;
                     player.ArrowSpriteSheetPath = data.ArrowSpriteSheetPath;
                 }
+            }
+
+            if (!string.IsNullOrEmpty(data.AttackSpriteSheetPath))
+            {
+                player.AttackSpriteSheetPath = data.AttackSpriteSheetPath;
+                player.AttackHFrames = data.AttackHFrames;
+                player.AttackVFrames = data.AttackVFrames;
+                player.AttackWidth = data.AttackFrameWidth;
+                player.AttackHeight = data.AttackFrameHeight;
             }
         }
 

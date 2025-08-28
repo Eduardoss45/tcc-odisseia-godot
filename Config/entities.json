@@ -32,6 +32,11 @@
     "SpriteVFrames": 9,
     "CrosshairPath": "res://Sprites/crosshair.png",
     "ArrowScenePath": "res://Cenas/Arrow.tscn",
-    "ArrowSpriteSheetPath": "res://Sprites/arrow.png"
+    "ArrowSpriteSheetPath": "res://Sprites/arrow.png",
+    "AttackSpriteSheetPath": "res://Sprites/attack_spritesheet.png",
+    "AttackHFrames": 5,
+    "AttackVFrames": 8,
+    "AttackFrameWidth": 96,
+    "AttackFrameHeight": 60
   }
 ]

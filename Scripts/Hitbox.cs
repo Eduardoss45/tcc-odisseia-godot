@@ -4,8 +4,6 @@ using System;
 public partial class Hitbox : Node2D
 {
     private Polygon2D polygon;
-    private Color defaultColor = Colors.White;
-    private Color clickColor = Colors.Red;
     private bool clicked = false;
 
     public override void _Ready()
@@ -20,7 +18,7 @@ public partial class Hitbox : Node2D
         Vector2 p2 = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
 
         polygon.Polygon = new Vector2[] { p0, p1, p2 };
-        polygon.Color = defaultColor;
+        polygon.Visible = false;
     }
 
     public override void _Process(double delta)
@@ -42,10 +40,8 @@ public partial class Hitbox : Node2D
         if (clicked) return;
         clicked = true;
 
-        polygon.Color = clickColor;
         await ToSignal(GetTree().CreateTimer(0.2f), "timeout");
 
-        polygon.Color = defaultColor;
         clicked = false;
     }
 }

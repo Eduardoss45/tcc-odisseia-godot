@@ -12,6 +12,7 @@ public partial class Player : CharacterBody2D
 	[Export] public float AttackFaceLock = 0.2f; // quanto tempo manter a direção travada no ataque
 	private float attackFaceTimer = 0f;
 	private Vector2 attackDir = Vector2.Zero;
+	private int attackLine = 0; // linha fixa durante ataque
 
 	[Export] public string SpriteSheetPath { get; set; } = "";
 	[Export] public int SpriteHFrames { get; set; } = 8;
@@ -41,6 +42,17 @@ public partial class Player : CharacterBody2D
 	private float dashCooldownLeft = 0f;
 	public const uint PlayerLayer = 0;
 
+	[Export] public string AttackSpriteSheetPath { get; set; } = "";
+	public int AttackHFrames { get; set; } = 5; // Colunas
+	public int AttackVFrames { get; set; } = 8; // Linhas
+	public int AttackWidth { get; set; } = 64;
+	public int AttackHeight { get; set; } = 64;
+
+	private int attackFrame = 0;
+	private float attackFrameTimer = 0f;
+	private float attackFrameDuration = 0.05f; // velocidade da animação
+	private bool isAttacking = false;
+
 	public override void _Ready()
 	{
 		sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
@@ -69,7 +81,8 @@ public partial class Player : CharacterBody2D
 			if (crossTex != null) crosshair.Texture = crossTex;
 			crosshair.Visible = false;
 		}
-
+		ApplySprite();       // Sprite normal
+		ApplyAttackSprite(); // Sprite de ataque
 		Position = new Vector2(600, 350);
 	}
 
@@ -87,6 +100,31 @@ public partial class Player : CharacterBody2D
 			if (crosshair != null) crosshair.GlobalPosition = GetGlobalMousePosition();
 			return;
 		}
+
+		if (isAttacking)
+		{
+			attackFrameTimer += (float)delta;
+			if (attackFrameTimer >= attackFrameDuration)
+			{
+				attackFrameTimer = 0f;
+				attackFrame++;
+
+				if (attackFrame >= AttackHFrames) // acabou a animação
+				{
+					isAttacking = false;
+
+					// volta para spritesheet normal
+					ApplySprite();
+					sprite.FrameCoords = new Vector2I(0, GetDirectionIndex(attackDir));
+				}
+				else
+				{
+					sprite.FrameCoords = new Vector2I(attackFrame, attackLine);
+				}
+			}
+			return; // cancela o resto do controle (andar/dash etc.)
+		}
+
 
 		if (dashTimeLeft > 0)
 		{
@@ -128,8 +166,11 @@ public partial class Player : CharacterBody2D
 		if (isAiming && @event.IsActionPressed("shoot"))
 			ShootArrow();
 
-		if (@event.IsActionPressed("attack"))
-			FaceAttackDirection();
+		if (@event.IsActionPressed("attack") && !isAttacking)
+		{
+			StartAttack();
+		}
+
 	}
 
 	private void ShootArrow()
@@ -202,7 +243,7 @@ public partial class Player : CharacterBody2D
 			int idleDir = GetIdleDirection();
 			sprite.FrameCoords = new Vector2I(idleDir, 0);
 		}
-		
+
 		if (attackFaceTimer > 0f)
 		{
 			int attackIndex = GetDirectionIndex(attackDir);
@@ -270,4 +311,48 @@ public partial class Player : CharacterBody2D
 		int dirIndex = GetDirectionIndex(dir);
 		sprite.FrameCoords = new Vector2I(dirIndex, 0);
 	}
+
+	public void ApplyAttackSprite()
+	{
+		var spriteNode = GetNodeOrNull<Sprite2D>("AttackSprite2D");
+		if (spriteNode != null && !string.IsNullOrEmpty(AttackSpriteSheetPath))
+		{
+			var tex = GD.Load<Texture2D>(AttackSpriteSheetPath);
+			if (tex != null)
+			{
+				spriteNode.Texture = tex;
+				spriteNode.Hframes = AttackHFrames;
+				spriteNode.Vframes = AttackVFrames;
+				spriteNode.Visible = false;
+			}
+		}
+	}
+	private void StartAttack()
+	{
+		isAttacking = true;
+		attackFrame = 0;
+		attackFrameTimer = 0f;
+
+		// trava direção do ataque
+		attackDir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
+		attackLine = GetDirectionIndex(attackDir);
+
+		// trava controles
+		Velocity = Vector2.Zero;
+
+		// troca para spritesheet de ataque
+		if (!string.IsNullOrEmpty(AttackSpriteSheetPath) && sprite != null)
+		{
+			var tex = GD.Load<Texture2D>(AttackSpriteSheetPath);
+			if (tex != null)
+			{
+				sprite.Texture = tex;
+				sprite.Hframes = AttackHFrames;
+				sprite.Vframes = AttackVFrames;
+			}
+		}
+
+		sprite.FrameCoords = new Vector2I(attackFrame, attackLine);
+	}
+
 }
