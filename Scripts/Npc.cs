@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public partial class Npc : CharacterBody2D
 {
@@ -8,23 +10,13 @@ public partial class Npc : CharacterBody2D
     private Node2D player;
 
     [Export] public bool AiEnabled { get; set; } = false;
-    [Export] public float Speed { get; set; } = 80f;
-    [Export] public float DetectionRange { get; set; } = 200f;
+    [Export] public float Speed { get; set; } = 200f;
+    [Export] public float DetectionRange { get; set; } = 100f;
     [Export] public float StopRange { get; set; } = 32f;
-
-    // --- DASH CONFIG ---
-    [Export] public float DashSpeed { get; set; } = 300f;
-    [Export] public float DashCooldown { get; set; } = 2f;
-    [Export] public float DashChargeTime { get; set; } = 0.5f;
-    [Export] public float StopDistance { get; set; } = 24f;
-
-    private enum DashState { Ready, Charging, Dashing, Cooldown }
-    private DashState dashState = DashState.Ready;
-
-    private float dashTimer = 0f;
-    private Vector2 dashDir = Vector2.Zero;
-
     private Vector2 velocity = Vector2.Zero;
+
+    // Dash
+    private DashController dashController;
 
     [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/npc_spritesheet.png";
     [Export] public int SpriteSheetRows { get; set; } = 8;
@@ -45,17 +37,37 @@ public partial class Npc : CharacterBody2D
     {
         sprite = GetNode<Sprite2D>("Sprite2D");
         var texture = GD.Load<Texture2D>(SpriteSheetPath);
-        if (texture != null)
+        if (texture == null)
         {
-            sprite.Texture = texture;
-            sprite.Hframes = SpriteSheetCols;
-            sprite.Vframes = SpriteSheetRows;
+            GD.PrintErr($"Falha ao carregar textura: {SpriteSheetPath}");
+            return;
         }
+        sprite.Texture = texture;
+        sprite.Hframes = SpriteSheetCols;
+        sprite.Vframes = SpriteSheetRows;
 
         InitializeAnimationRects();
         SetAnimationFrame(0, 0);
 
         dialogic = GetNodeOrNull("/root/Dialogic");
+        if (dialogic == null)
+            GD.PrintErr("Dialogic não encontrado.");
+
+        var clickArea = GetNodeOrNull<Area2D>("Area2D");
+        if (clickArea != null)
+            clickArea.Connect("input_event", new Callable(this, nameof(OnClicked)));
+        else
+            GD.PrintErr("Area2D não encontrada no NPC.");
+
+        // Inicializa DashController
+        dashController = new DashController
+        {
+            DashSpeed = 300f,
+            DashChargeTime = 0.5f,
+            DashCooldown = 2f,
+            StopDistance = 24f,
+            DashDuration = 0.8f
+        };
     }
 
     public override void _PhysicsProcess(double delta)
@@ -71,68 +83,18 @@ public partial class Npc : CharacterBody2D
             return;
         }
 
-        HandleDash((float)delta);
+        // Atualiza o dashController e pega a velocidade resultante
+        dashController.Update((float)delta, Position, player.Position);
+        velocity = dashController.Velocity;
 
+        // Aplica movimento
         Velocity = velocity;
         MoveAndSlide();
+
+        // Atualiza animação
         UpdateAnimation(delta);
     }
 
-    private void HandleDash(float delta)
-    {
-        dashTimer -= delta;
-
-        switch (dashState)
-        {
-            case DashState.Ready:
-                float dist = Position.DistanceTo(player.Position);
-                if (dist <= DetectionRange && dashTimer <= 0f)
-                {
-                    dashState = DashState.Charging;
-                    dashTimer = DashChargeTime;
-                    dashDir = (player.Position - Position).Normalized();
-                }
-                else
-                {
-                    UpdateAI();
-                }
-                break;
-
-            case DashState.Charging:
-                // Efeito visual: mudar cor enquanto carrega
-                float t = 1f - (dashTimer / DashChargeTime);
-                sprite.Modulate = new Color(1, 1 - t, 1 - t); // branco -> vermelho
-
-                if (dashTimer <= 0f)
-                {
-                    dashState = DashState.Dashing;
-                    dashTimer = 0.8f; // tempo máximo de dash
-                }
-                velocity = Vector2.Zero;
-                break;
-
-            case DashState.Dashing:
-                sprite.Modulate = Colors.White;
-                velocity = dashDir * DashSpeed;
-
-                // parar se estiver perto o suficiente do player
-                if (Position.DistanceTo(player.Position) <= StopDistance || dashTimer <= 0f)
-                {
-                    dashState = DashState.Cooldown;
-                    dashTimer = DashCooldown;
-                    velocity = Vector2.Zero;
-                }
-                break;
-
-            case DashState.Cooldown:
-                UpdateAI();
-                if (dashTimer <= 0f)
-                {
-                    dashState = DashState.Ready;
-                }
-                break;
-        }
-    }
 
     private void UpdateAI()
     {
@@ -146,9 +108,13 @@ public partial class Npc : CharacterBody2D
         float safeStopRange = StopRange + 6f;
 
         if (distanceToPlayer <= DetectionRange && distanceToPlayer > safeStopRange)
+        {
             velocity = (player.Position - Position).Normalized() * Speed;
+        }
         else
+        {
             velocity = Vector2.Zero;
+        }
     }
 
     private void UpdateAnimation(double delta)
@@ -188,8 +154,10 @@ public partial class Npc : CharacterBody2D
     public void SetAnimationFrame(int row, int col)
     {
         if (row < 0 || row >= SpriteSheetRows || col < 0 || col >= SpriteSheetCols)
+        {
+            GD.PrintErr("Frame fora do intervalo da matriz.");
             return;
-
+        }
         sprite.RegionRect = animationRects[row, col];
     }
 
@@ -207,19 +175,77 @@ public partial class Npc : CharacterBody2D
         return spriteMap[sector];
     }
 
-    // --- Compat: manter API antiga usada por outros scripts ---
+    private void OnClicked(Node viewport, InputEvent @event, int shapeIdx)
+    {
+        if (@event is InputEventMouseButton mouseEvent &&
+            mouseEvent.Pressed &&
+            mouseEvent.ButtonIndex == MouseButton.Left)
+        {
+            StartDialog();
+        }
+    }
+
+    private void StartDialog()
+    {
+        if (dialogic == null)
+        {
+            GD.PrintErr("Dialogic node não encontrado!");
+            return;
+        }
+
+        string timelinePath = $"res://Chars/{DialogTimelineName}.dtl";
+        var timelineResource = GD.Load<Resource>(timelinePath);
+        if (timelineResource == null)
+        {
+            GD.PrintErr($"Falha ao carregar timeline: {timelinePath}");
+            return;
+        }
+
+        var characterResource = GD.Load<Resource>(CharacterResourcePath);
+        var playerResource = GD.Load<Resource>(PlayerResourcePath);
+        if (characterResource == null || playerResource == null)
+        {
+            GD.PrintErr("Falha ao carregar personagem .dch");
+            return;
+        }
+
+        var marker = GetNodeOrNull<Node2D>("Marker2D");
+        var playerMarker = GetNode<Node2D>("/root/World/Player/Marker2D");
+        if (marker == null || playerMarker == null)
+        {
+            GD.PrintErr("Marker2D não encontrado.");
+            return;
+        }
+
+        Variant layoutVariant = dialogic.Call("start", timelineResource);
+        CanvasLayer layout = layoutVariant.As<CanvasLayer>();
+        if (layout == null)
+        {
+            GD.PrintErr("Layout retornado não é um CanvasLayer válido.");
+            return;
+        }
+
+        layout.Call("register_character", characterResource, marker);
+        layout.Call("register_character", playerResource, playerMarker);
+
+        if (!isConnected)
+        {
+            dialogic.Connect("timeline_ended", new Callable(this, nameof(OnDialogFinished)));
+            isConnected = true;
+        }
+    }
+
+    private void OnDialogFinished()
+    {
+        if (dialogic != null && isConnected)
+        {
+            dialogic.Disconnect("timeline_ended", new Callable(this, nameof(OnDialogFinished)));
+            isConnected = false;
+        }
+    }
+
     public void SetAIActive(bool active)
     {
         AiEnabled = active;
-    }
-
-    // Se algum script (ex.: NpcAI) ainda usa SetVelocity, mantenha este wrapper.
-    // Ele respeita o dash: ignora alterações enquanto estiver Charging/Dashing.
-    public void SetVelocity(Vector2 vel)
-    {
-        if (dashState == DashState.Dashing || dashState == DashState.Charging)
-            return;
-
-        velocity = vel;
     }
 }
