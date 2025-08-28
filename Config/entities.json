@@ -13,17 +13,16 @@
     "AiEnabled": true
   },
   {
-    "ScenePath": "res://Cenas/Npc.tscn",
-    "SpriteSheetRows": 9,
-    "SpriteSheetCols": 8,
-    "SpriteSheetWidth": 512,
-    "SpriteSheetHeight": 576,
+    "ScenePath": "res://Cenas/StaticNpc.tscn",
+    "SpriteSheetRows": 1,
+    "SpriteSheetCols": 2,
+    "SpriteSheetWidth": 150,
+    "SpriteSheetHeight": 77,
     "DialogTimelineName": "npc_dialogo_2",
     "CharacterResourcePath": "res://Chars/Npc.dch",
     "PlayerResourcePath": "res://Chars/Player.dch",
-    "SpriteSheetPath": "res://Sprites/npc_spritesheet.png",
-    "Position": [600, 500],
-    "AiEnabled": false
+    "SpriteSheetPath": "res://Sprites/athena_spritesheet.png",
+    "Position": [410, 270]
   },
   {
     "ScenePath": "res://Cenas/Player.tscn",

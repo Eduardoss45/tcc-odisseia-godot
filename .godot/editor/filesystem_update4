@@ -14,3 +14,5 @@ res://Scripts/BtnStart.cs
 res://Scripts/NpcAI.cs
 res://Scripts/Hitbox.cs
 res://Game.tscn
+res://Cenas/StaticNpc.tscn
+res://Scripts/StaticNpc.cs

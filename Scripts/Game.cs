@@ -66,7 +66,7 @@ public partial class Game : Node2D
         if (data.Position != null && data.Position.Length == 2)
             instance.Position = new Vector2(data.Position[0], data.Position[1]);
 
-        // Configura NPC
+        // Configura Npc
         if (instance is Npc npc)
         {
             npc.SpriteSheetRows = data.SpriteSheetRows;
@@ -78,6 +78,18 @@ public partial class Game : Node2D
             npc.PlayerResourcePath = data.PlayerResourcePath;
             npc.SpriteSheetPath = data.SpriteSheetPath;
             npc.SetAIActive(data.AiEnabled);
+        }
+        // Configura StaticNpc
+        else if (instance is StaticNpc staticNpc)
+        {
+            staticNpc.SpriteSheetRows = data.SpriteSheetRows;
+            staticNpc.SpriteSheetCols = data.SpriteSheetCols;
+            staticNpc.SpriteSheetWidth = data.SpriteSheetWidth;
+            staticNpc.SpriteSheetHeight = data.SpriteSheetHeight;
+            staticNpc.DialogTimelineName = data.DialogTimelineName;
+            staticNpc.CharacterResourcePath = data.CharacterResourcePath;
+            staticNpc.PlayerResourcePath = data.PlayerResourcePath;
+            staticNpc.SpriteSheetPath = data.SpriteSheetPath;
         }
         // Configura Player
         else if (instance is Player player)
@@ -115,6 +127,7 @@ public partial class Game : Node2D
                 }
             }
         }
+
         AddChild(instance);
     }
 }
