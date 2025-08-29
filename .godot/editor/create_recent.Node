@@ -1,3 +1,8 @@
+TextureRect
+VBoxContainer
+HBoxContainer
+MarginContainer
+CanvasLayer
 Marker2D
 Polygon2D
 Node2D
@@ -8,7 +13,3 @@ RigidBody2D
 Node
 Area2D
 Camera2D
-CanvasLayer
-Button
-Control
-CanvasGroup
