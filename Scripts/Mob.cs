@@ -6,7 +6,7 @@ public partial class Mob : CharacterBody2D
     private Sprite2D sprite;
     private Node2D player;
 
-    [Export] public float Speed { get; set; } = 200f;
+    [Export] public float Speed { get; set; } = 125f;
     [Export] public float DetectionRange { get; set; } = 100f;
     [Export] public float StopRange { get; set; } = 32f;
     [Export] public int SpriteSheetRows { get; set; } = 2;
@@ -40,6 +40,12 @@ public partial class Mob : CharacterBody2D
 
     [Export] public float AnimationSpeed { get; set; } = 8f; // frames por segundo
 
+    private bool canAttack = true;
+    private Timer attackCooldown;
+    private float attackCooldownTime = 1f;
+    private float attackTimer = 0f;
+    private int lastRow = 1;
+
     public override void _Ready()
     {
         sprite = GetNode<Sprite2D>("Sprite2D");
@@ -64,8 +70,33 @@ public partial class Mob : CharacterBody2D
             DashDuration = 0.8f
         };
 
-        // Vida inicial
+        base._Ready();
+
+        // Pega a hitbox
+        var hitbox = GetNode<Area2D>("Hitbox");
+        hitbox.BodyEntered += OnHitPlayer;
+
+        // Timer de cooldown
+        attackCooldown = new Timer();
+        attackCooldown.WaitTime = 1f; // 1 segundo
+        attackCooldown.OneShot = true;
+        attackCooldown.Autostart = false;
+        AddChild(attackCooldown);
+        attackCooldown.Timeout += () => { canAttack = true; };
+
         currentHealth = MaxHealth;
+    }
+
+    private void OnHitPlayer(Node body)
+    {
+        if (body is Player player && canAttack)
+        {
+            player.TakeDamage(1);
+            GD.Print("Dano aplicado ao Player!");
+
+            canAttack = false;
+            attackCooldown.Start();
+        }
     }
 
     public override void _PhysicsProcess(double delta)
@@ -81,17 +112,50 @@ public partial class Mob : CharacterBody2D
             return;
         }
 
+        // Atualiza cooldown
+        attackTimer -= (float)delta;
 
-        // AI simples: seguir player
+        var hitbox = GetNode<Area2D>("Hitbox");
+        foreach (var body in hitbox.GetOverlappingBodies())
+        {
+            if (body is Player player && attackTimer <= 0f)
+            {
+                player.TakeDamage(1);
+                GD.Print("Dano aplicado ao Player!");
+                attackTimer = attackCooldownTime; // reinicia cooldown
+            }
+        }
+
+
         float distance = Position.DistanceTo(player.Position);
+
         if (distance <= DetectionRange && distance > StopRange)
         {
+            // sempre em velocidade cheia até o StopRange
             velocity = (player.Position - Position).Normalized() * Speed;
         }
         else
         {
+            // não se move
             velocity = Vector2.Zero;
         }
+
+        // --- Animação ---
+        if (velocity.Length() > 2f || dashController.IsDashing)
+        {
+            frameTimer += (float)delta;
+            if (frameTimer >= 1.0f / AnimationSpeed)
+            {
+                frameTimer -= 1.0f / AnimationSpeed;
+                frameX = (frameX + 1) % Cols;
+            }
+        }
+        else
+        {
+            frameX = 0; // frame parado
+        }
+
+
 
         // Atualiza dash
         dashController.Update((float)delta, Position, player.Position);
@@ -108,18 +172,25 @@ public partial class Mob : CharacterBody2D
 
     private void UpdateAnimation(double delta)
     {
-        // Prioridade horizontal: decide linha
-        if (velocity.X < 0)
-            row = 0; // esquerda
-        else if (velocity.X > 0)
-            row = 1; // direita
+        if (player == null) return;
 
-        if (velocity.Length() > 0)
+        // Direção com base na velocidade real
+        if (velocity.X < -1)
+            row = 0; // esquerda
+        else if (velocity.X > 1)
+            row = 1; // direita
+        else
+            row = lastRow;
+
+        lastRow = row;
+
+        // Controle de frames
+        if (velocity.Length() > 2f || dashController.IsDashing)
         {
             frameTimer += (float)delta;
             if (frameTimer >= 1.0f / AnimationSpeed)
             {
-                frameTimer = 0f;
+                frameTimer -= 1.0f / AnimationSpeed;
                 frameX = (frameX + 1) % Cols;
             }
         }
@@ -130,6 +201,8 @@ public partial class Mob : CharacterBody2D
 
         sprite.RegionRect = new Rect2(frameX * FrameWidth, row * FrameHeight, FrameWidth, FrameHeight);
     }
+
+
 
     // --- Sistema de Vida ---
     public void TakeDamage(int amount)

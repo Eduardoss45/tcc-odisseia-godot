@@ -6,6 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_o3ckw"]
 
 [node name="Mob" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_4jutn")
 
 [node name="Marker2D" type="Marker2D" parent="."]
@@ -20,10 +21,15 @@ z_index = 2
 texture_filter = 1
 scale = Vector2(1, 0.984)
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(2, 2)
+collision_layer = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource("CircleShape2D_o3ckw")
 
 [node name="MobAI" type="Node" parent="."]
 script = ExtResource("2_trkgy")
+
+[node name="AttackCooldown" type="Timer" parent="."]
+one_shot = true

@@ -5,6 +5,7 @@ public partial class StaticNpc : CharacterBody2D
 {
     private Node? dialogic;
     private Sprite2D sprite;
+    private Player player;
 
     [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/Staticnpc_spritesheet.png";
     [Export] public int SpriteSheetRows { get; set; } = 8; // Vframes
@@ -69,6 +70,11 @@ public partial class StaticNpc : CharacterBody2D
 
     private void StartDialog()
     {
+
+        // Bloqueia ataque do player
+        if (player != null)
+            player.CanAttack = false;
+
         if (dialogic == null)
         {
             GD.PrintErr("Dialogic node não encontrado!");
@@ -121,6 +127,13 @@ public partial class StaticNpc : CharacterBody2D
 
     private void OnDialogFinished()
     {
+
+        // Libera ataque do player
+        if (player != null)
+            player.CanAttack = true;
+
+        SetAnimationFrame(0, 0);
+
         if (dialogic != null && isConnected)
         {
             dialogic.Disconnect("timeline_ended", new Callable(this, nameof(OnDialogFinished)));

@@ -11,7 +11,7 @@ public partial class Hud : CanvasLayer
     {
         lifeIcon = GetNode<TextureRect>("MarginContainer/VBoxContainer/Life");
 
-        for (int i = 0; i <= 9; i++)
+        for (int i = 9; i >= 0; i--)
         {
             var path = $"res://Sprites/hp/{i}.png";
             GD.Print("Carregando: ", path);

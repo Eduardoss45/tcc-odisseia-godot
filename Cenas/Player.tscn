@@ -6,6 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_ybxfy"]
 
 [node name="Player" type="CharacterBody2D"]
+collision_mask = 2
 script = ExtResource("1_7k6h6")
 
 [node name="Marker2D" type="Marker2D" parent="."]
