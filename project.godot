@@ -22,8 +22,8 @@ Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
 [dialogic]
 
 directories/dch_directory={
-"Npc": "res://Chars/Npc.dch",
-"Player": "res://Chars/Player.dch"
+"Athena": "res://Chars/Athena.dch",
+"Odisseu": "res://Chars/Odisseu.dch"
 }
 directories/dtl_directory={
 "npc_dialogo_1": "res://Chars/npc_dialogo_1.dtl",

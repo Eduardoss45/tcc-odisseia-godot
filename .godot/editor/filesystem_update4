@@ -1,6 +1,8 @@
-res://Game.tscn
+res://Cenas/MenuPrincipal.tscn
 res://Styles/Clouds.tres
-res://Chars/Npc.dch
+res://Chars/Athena.dch
+res://Scripts/Hud.cs
+res://Game.tscn
 res://Scripts/BtnConfig.cs
 res://Scripts/StaticNpc.cs
 res://Scripts/Hitbox.cs
@@ -10,7 +12,4 @@ res://Scripts/Player.cs
 res://Scripts/Arrow.cs
 res://Scripts/Game.cs
 res://Scripts/BtnStart.cs
-res://Scripts/Hud.cs
 res://Scripts/MobAI.cs
-res://Cenas/Player.tscn
-res://Cenas/Mob.tscn

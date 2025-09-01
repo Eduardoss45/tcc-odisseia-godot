@@ -208,9 +208,12 @@ public partial class Mob : CharacterBody2D
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
+        GD.Print($"Mob levou {amount} de dano! HP: {currentHealth}");
+
         if (currentHealth <= 0)
             Die();
     }
+
 
     private void Die()
     {

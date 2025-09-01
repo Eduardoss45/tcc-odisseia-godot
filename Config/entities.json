@@ -18,8 +18,8 @@
     "SpriteSheetWidth": 150,
     "SpriteSheetHeight": 77,
     "DialogTimelineName": "npc_dialogo_2",
-    "CharacterResourcePath": "res://Chars/Npc.dch",
-    "PlayerResourcePath": "res://Chars/Player.dch",
+    "CharacterResourcePath": "res://Chars/Athena.dch",
+    "PlayerResourcePath": "res://Chars/Odisseu.dch",
     "SpriteSheetPath": "res://Sprites/athena_spritesheet.png",
     "Position": [410, 270]
   },

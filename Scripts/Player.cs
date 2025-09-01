@@ -9,10 +9,10 @@ public partial class Player : CharacterBody2D
 	[Export] public float DashBonus = 200.0f;
 	[Export] public float DashDuration = 0.3f;
 	[Export] public float DashCooldown = 2.0f;
-	[Export] public float AttackFaceLock = 0.2f; // quanto tempo manter a direção travada no ataque
+	[Export] public float AttackFaceLock = 0.2f;
 	private float attackFaceTimer = 0f;
 	private Vector2 attackDir = Vector2.Zero;
-	private int attackLine = 0; // linha fixa durante ataque
+	private int attackLine = 0;
 
 	[Export] public string SpriteSheetPath { get; set; } = "";
 	[Export] public int SpriteHFrames { get; set; } = 8;
@@ -43,8 +43,8 @@ public partial class Player : CharacterBody2D
 	public const uint PlayerLayer = 0;
 
 	[Export] public string AttackSpriteSheetPath { get; set; } = "";
-	public int AttackHFrames { get; set; } = 5; // Colunas
-	public int AttackVFrames { get; set; } = 8; // Linhas
+	public int AttackHFrames { get; set; } = 5;
+	public int AttackVFrames { get; set; } = 8;
 	public int AttackWidth { get; set; } = 64;
 	public int AttackHeight { get; set; } = 64;
 
@@ -55,19 +55,28 @@ public partial class Player : CharacterBody2D
 
 	private int maxHp = 10;
 	private int hp;
+	private int maxEnergy = 10;
+	private float energy;
 	private Hud hud;
 	private bool faceLocked = false;
 	private Vector2 faceLockDir = Vector2.Zero;
-	[Export] public float ShootCooldown = 0.75f; // 750ms
+	[Export] public float ShootCooldown = 0.75f; // intervalo de disparos
 	private float shootCooldownLeft = 0f;
 	public bool CanAttack { get; set; } = true;
+
+
+	[Export] public float HpRegenRate = 0.5f;     // velocidade de regeneração 0.5 HP/s
+	[Export] public float EnergyRegenRate = 2f;   // velocidade de regeneração 2 Energia/s
+	private float hpRegenBuffer = 0f;
 
 
 	public override void _Ready()
 	{
 		hp = maxHp;
+		energy = maxEnergy;
 		hud = GetTree().Root.GetNode<Hud>("World/Hud");
 		hud.UpdateLife(hp);
+		hud.UpdateEnergyByValue(energy, maxEnergy);
 		sprite = GetNodeOrNull<Sprite2D>("Sprite2D");
 		camera = GetNodeOrNull<Camera2D>("Camera2D");
 		crosshair = GetNodeOrNull<Sprite2D>("Crosshair");
@@ -94,8 +103,8 @@ public partial class Player : CharacterBody2D
 			if (crossTex != null) crosshair.Texture = crossTex;
 			crosshair.Visible = false;
 		}
-		ApplySprite();       // Sprite normal
-		ApplyAttackSprite(); // Sprite de ataque
+		ApplySprite();
+		ApplyAttackSprite();
 		Position = new Vector2(600, 350);
 	}
 
@@ -103,6 +112,27 @@ public partial class Player : CharacterBody2D
 	{
 		if (sprite == null) return;
 
+		if (sprite == null) return;
+
+		if (hp > 0 && hp < maxHp)
+		{
+			hpRegenBuffer += HpRegenRate * (float)delta;
+			if (hpRegenBuffer >= 1f)
+			{
+				int amount = (int)hpRegenBuffer;
+				hp += amount;
+				if (hp > maxHp) hp = maxHp;
+				hpRegenBuffer -= amount;
+				hud.UpdateLife(hp);
+			}
+		}
+
+		if (energy < maxEnergy)
+		{
+			energy += EnergyRegenRate * (float)delta;
+			if (energy > maxEnergy) energy = maxEnergy;
+			hud.UpdateEnergyByValue(energy, maxEnergy);
+		}
 
 
 		if (isAiming)
@@ -121,11 +151,10 @@ public partial class Player : CharacterBody2D
 				attackFrameTimer = 0f;
 				attackFrame++;
 
-				if (attackFrame >= AttackHFrames) // acabou a animação
+				if (attackFrame >= AttackHFrames)
 				{
 					isAttacking = false;
 
-					// volta para spritesheet normal
 					ApplySprite();
 					sprite.FrameCoords = new Vector2I(0, GetDirectionIndex(attackDir));
 				}
@@ -134,7 +163,7 @@ public partial class Player : CharacterBody2D
 					sprite.FrameCoords = new Vector2I(attackFrame, attackLine);
 				}
 			}
-			return; // cancela o resto do controle (andar/dash etc.)
+			return;
 		}
 
 
@@ -147,9 +176,15 @@ public partial class Player : CharacterBody2D
 
 		if (Input.IsKeyPressed(Key.Q) && dashCooldownLeft <= 0 && !isDashing)
 		{
-			isDashing = true;
-			dashTimeLeft = DashDuration;
-			dashCooldownLeft = DashCooldown;
+			if (energy >= 3f)
+			{
+				energy -= 3f;
+				hud.UpdateEnergyByValue(energy, maxEnergy);
+
+				isDashing = true;
+				dashTimeLeft = DashDuration;
+				dashCooldownLeft = DashCooldown;
+			}
 		}
 
 		Vector2 direction = Vector2.Zero;
@@ -184,23 +219,32 @@ public partial class Player : CharacterBody2D
 
 		if (@event.IsActionPressed("attack") && !isAttacking)
 		{
-			StartAttack();
+			if (energy >= 2f)
+			{
+				energy -= 2f;
+				hud.UpdateEnergyByValue(energy, maxEnergy);
+				StartAttack();
+			}
 		}
+
 
 	}
 
 	private void ShootArrow()
 	{
-		if (!CanAttack) return; // bloqueia se estiver em diálogo
+		if (!CanAttack) return;
 		if (ArrowScene == null || crosshair == null) return;
+		if (shootCooldownLeft > 0) return;
 
-		if (shootCooldownLeft > 0) return; // ainda recarregando
+		if (energy < 1f) return;
+		energy -= 1f;
+		hud.UpdateEnergyByValue(energy, maxEnergy);
+
 		shootCooldownLeft = ShootCooldown;
 
 		Vector2 dir = (crosshair.GlobalPosition - GlobalPosition).Normalized();
 		lastAttackDir = dir;
 
-		// lock da face (permanecer virado para o disparo até andar)
 		faceLocked = true;
 		faceLockDir = dir;
 
@@ -277,9 +321,9 @@ public partial class Player : CharacterBody2D
 			int attackIndex = GetDirectionIndex(attackDir);
 
 			if (Velocity == Vector2.Zero)
-				sprite.FrameCoords = new Vector2I(attackIndex, 0);          // idle na direção do ataque
+				sprite.FrameCoords = new Vector2I(attackIndex, 0);
 			else
-				sprite.FrameCoords = new Vector2I(animationFrame, attackIndex + 1); // andando na direção do ataque
+				sprite.FrameCoords = new Vector2I(animationFrame, attackIndex + 1);
 		}
 	}
 
@@ -328,11 +372,11 @@ public partial class Player : CharacterBody2D
 
 	private int GetIdleDirection()
 	{
-		// Se travado por um ataque / disparo, usa essa direção até o jogador se mover
+
 		if (faceLocked && faceLockDir != Vector2.Zero)
 			return GetDirectionIndex(faceLockDir);
 
-		// Se ainda estiver atacando (segurança), mantém direção do ataque
+
 		if (isAttacking && attackDir != Vector2.Zero)
 			return GetDirectionIndex(attackDir);
 
@@ -374,21 +418,19 @@ public partial class Player : CharacterBody2D
 	private void StartAttack()
 	{
 
-		if (!CanAttack) return; // bloqueia se estiver em diálogo
+		if (!CanAttack) return;
 		if (isAttacking) return;
 
 		isAttacking = true;
 		attackFrame = 0;
 		attackFrameTimer = 0f;
 
-		// trava direção do ataque
 		attackDir = (GetGlobalMousePosition() - GlobalPosition).Normalized();
 		attackLine = GetDirectionIndex(attackDir);
 
-		// trava controles
+
 		Velocity = Vector2.Zero;
 
-		// lock da face até o jogador mover (ou atacar/atirar novamente)
 		faceLocked = true;
 		faceLockDir = attackDir;
 
@@ -423,7 +465,7 @@ public partial class Player : CharacterBody2D
 	private void Die()
 	{
 		GD.Print("Player morreu!");
-		// aqui você pode reiniciar cena, mostrar game over etc.
+		//  Reiniciar a cena, mostrar game over etc.
 	}
 
 	private void OnHitPlayer(Player player)
