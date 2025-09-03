@@ -15,7 +15,6 @@ public partial class Mob : CharacterBody2D
     [Export] public int SpriteSheetHeight { get; set; } = 600;
     public void SetAIActive(bool active) => AiEnabled = active;
 
-
     // AI
     [Export] public bool AiEnabled { get; set; } = true;
 
@@ -24,27 +23,42 @@ public partial class Mob : CharacterBody2D
     // Dash
     private DashController dashController;
 
-    // Animação 4x2
+    // --- Animacao de Movimento 4x2 ---
     [Export] public string SpriteSheetPath { get; set; } = "res://Sprites/mob_spritesheet.png";
     private int frameX = 0;
     private float frameTimer = 0f;
-    private int row = 1; // direita por padrão
+    private int row = 0; // começa virado para esquerda
     private const int Cols = 4;
     private const int Rows = 2;
     [Export] public int FrameWidth { get; set; } = 64;
     [Export] public int FrameHeight { get; set; } = 64;
 
+    [Export] public float AnimationSpeed { get; set; } = 4f; // frames por segundo
+    private int lastRow = 1; // começa virado para esquerda
+
+    // --- Animacao Parado ---
+    [Export] public string IdleSpriteSheetPath { get; set; } = "res://Sprites/javali_parado_spritesheet.png";
+    [Export] public int IdleFrameWidth { get; set; } = 320;
+    [Export] public int IdleFrameHeight { get; set; } = 300;
+    private int idleFrameX = 0;
+    private float idleFrameTimer = 0f;
+    private int idleCols = 2;
+    private int idleRows = 2;
+
     // Stats
     [Export] public int MaxHealth { get; set; } = 100;
     private int currentHealth;
-
-    [Export] public float AnimationSpeed { get; set; } = 8f; // frames por segundo
 
     private bool canAttack = true;
     private Timer attackCooldown;
     private float attackCooldownTime = 1f;
     private float attackTimer = 0f;
-    private int lastRow = 1;
+
+    // --- Animacao de Morte ---
+    private bool isDying = false;
+    [Export] public string DeathSpriteSheetPath { get; set; } = "res://Sprites/javali_abatido_spritesheet.png";
+    [Export] public int DeathFrameWidth { get; set; } = 400;
+    [Export] public int DeathFrameHeight { get; set; } = 300;
 
     public override void _Ready()
     {
@@ -59,6 +73,7 @@ public partial class Mob : CharacterBody2D
         sprite.Texture = texture;
         sprite.RegionEnabled = true;
         sprite.RegionRect = new Rect2(0, 0, FrameWidth, FrameHeight);
+        sprite.Scale = new Vector2(0.3f, 0.3f);
 
         // Dash
         dashController = new DashController
@@ -72,19 +87,23 @@ public partial class Mob : CharacterBody2D
 
         base._Ready();
 
-        // Pega a hitbox
+        // Hitbox
         var hitbox = GetNode<Area2D>("Hitbox");
         hitbox.BodyEntered += OnHitPlayer;
 
         // Timer de cooldown
         attackCooldown = new Timer();
-        attackCooldown.WaitTime = 1f; // 1 segundo
+        attackCooldown.WaitTime = 1f;
         attackCooldown.OneShot = true;
         attackCooldown.Autostart = false;
         AddChild(attackCooldown);
         attackCooldown.Timeout += () => { canAttack = true; };
 
         currentHealth = MaxHealth;
+
+        // Começa virado para direita
+        row = 0;
+        lastRow = 0;
     }
 
     private void OnHitPlayer(Node body)
@@ -101,6 +120,8 @@ public partial class Mob : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (isDying) return;
+
         if (player == null)
             player = GetTree().Root.GetNodeOrNull<Node2D>("/root/World/Player");
 
@@ -109,10 +130,10 @@ public partial class Mob : CharacterBody2D
             velocity = Vector2.Zero;
             Velocity = velocity;
             MoveAndSlide();
+            UpdateIdleAnimation(delta);
             return;
         }
 
-        // Atualiza cooldown
         attackTimer -= (float)delta;
 
         var hitbox = GetNode<Area2D>("Hitbox");
@@ -122,59 +143,35 @@ public partial class Mob : CharacterBody2D
             {
                 player.TakeDamage(1);
                 GD.Print("Dano aplicado ao Player!");
-                attackTimer = attackCooldownTime; // reinicia cooldown
+                attackTimer = attackCooldownTime;
             }
         }
-
 
         float distance = Position.DistanceTo(player.Position);
 
         if (distance <= DetectionRange && distance > StopRange)
-        {
-            // sempre em velocidade cheia até o StopRange
             velocity = (player.Position - Position).Normalized() * Speed;
-        }
         else
-        {
-            // não se move
             velocity = Vector2.Zero;
-        }
 
-        // --- Animação ---
-        if (velocity.Length() > 2f || dashController.IsDashing)
-        {
-            frameTimer += (float)delta;
-            if (frameTimer >= 1.0f / AnimationSpeed)
-            {
-                frameTimer -= 1.0f / AnimationSpeed;
-                frameX = (frameX + 1) % Cols;
-            }
-        }
-        else
-        {
-            frameX = 0; // frame parado
-        }
-
-
-
-        // Atualiza dash
         dashController.Update((float)delta, Position, player.Position);
         if (dashController.IsDashing)
             velocity = dashController.Velocity;
 
-        // Movimento
         Velocity = velocity;
         MoveAndSlide();
 
         // Animação
-        UpdateAnimation(delta);
+        if (velocity.Length() > 2f || dashController.IsDashing)
+            UpdateMovementAnimation(delta);
+        else
+            UpdateIdleAnimation(delta);
     }
 
-    private void UpdateAnimation(double delta)
+    private void UpdateMovementAnimation(double delta)
     {
         if (player == null) return;
 
-        // Direção com base na velocidade real
         if (velocity.X < -1)
             row = 0; // esquerda
         else if (velocity.X > 1)
@@ -184,27 +181,36 @@ public partial class Mob : CharacterBody2D
 
         lastRow = row;
 
-        // Controle de frames
-        if (velocity.Length() > 2f || dashController.IsDashing)
+        frameTimer += (float)delta;
+        if (frameTimer >= 1.0f / AnimationSpeed)
         {
-            frameTimer += (float)delta;
-            if (frameTimer >= 1.0f / AnimationSpeed)
-            {
-                frameTimer -= 1.0f / AnimationSpeed;
-                frameX = (frameX + 1) % Cols;
-            }
-        }
-        else
-        {
-            frameX = 0;
+            frameTimer -= 1.0f / AnimationSpeed;
+            frameX = (frameX + 1) % Cols;
         }
 
+        sprite.Texture = GD.Load<Texture2D>(SpriteSheetPath);
         sprite.RegionRect = new Rect2(frameX * FrameWidth, row * FrameHeight, FrameWidth, FrameHeight);
+        sprite.Scale = new Vector2(1f, 1f);
     }
 
+    private void UpdateIdleAnimation(double delta)
+    {
+        if (currentHealth <= 0 || isDying) return;
 
+        int idleRow = (lastRow == 0) ? 1 : 0; // direita = 0, esquerda = 1
 
-    // --- Sistema de Vida ---
+        idleFrameTimer += (float)delta;
+        if (idleFrameTimer >= 1.0f / AnimationSpeed)
+        {
+            idleFrameTimer -= 1.0f / AnimationSpeed;
+            idleFrameX = (idleFrameX + 1) % idleCols;
+        }
+
+        sprite.Texture = GD.Load<Texture2D>(IdleSpriteSheetPath);
+        sprite.RegionRect = new Rect2(idleFrameX * IdleFrameWidth, idleRow * IdleFrameHeight, IdleFrameWidth, IdleFrameHeight);
+        sprite.Scale = new Vector2(0.3f, 0.3f);
+    }
+
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
@@ -214,9 +220,29 @@ public partial class Mob : CharacterBody2D
             Die();
     }
 
-
     private void Die()
     {
-        QueueFree(); // Remove mob da cena
+        if (isDying) return;
+        isDying = true;
+
+        var deathTexture = GD.Load<Texture2D>(DeathSpriteSheetPath);
+        if (deathTexture == null)
+        {
+            GD.PrintErr($"Falha ao carregar textura de morte: {DeathSpriteSheetPath}");
+            QueueFree();
+            return;
+        }
+
+        sprite.Texture = deathTexture;
+        sprite.RegionEnabled = true;
+
+        int deathFrameIndex = (lastRow == 0) ? 1 : 0;
+        sprite.RegionRect = new Rect2(deathFrameIndex * DeathFrameWidth, 0, DeathFrameWidth, DeathFrameHeight);
+        sprite.Scale = new Vector2(0.3f, 0.3f);
+
+        AiEnabled = false;
+
+        var hitbox = GetNode<Area2D>("Hitbox");
+        hitbox.SetDeferred("monitoring", false);
     }
 }

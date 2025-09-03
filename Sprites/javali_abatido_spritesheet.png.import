@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctollwff3eki2"
-path="res://.godot/imported/9.png-6ee9be07ebac1c5da0b9bf6abd881d5e.ctex"
+uid="uid://bobt7uyxw6l8y"
+path="res://.godot/imported/javali_abatido_spritesheet.png-d0d8d6130035b636a684297bd00bbbcb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/hp/9.png"
-dest_files=["res://.godot/imported/9.png-6ee9be07ebac1c5da0b9bf6abd881d5e.ctex"]
+source_file="res://Sprites/javali_abatido_spritesheet.png"
+dest_files=["res://.godot/imported/javali_abatido_spritesheet.png-d0d8d6130035b636a684297bd00bbbcb.ctex"]
 
 [params]
 

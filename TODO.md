@@ -1,1 +1,4 @@
-Pensar em uma forma de deixar a athena alternar entre os gifs
+- Ajustar o novo Readme
+- Dividir codigo em partes menores
+- Implementar sprites de arco
+- Ajustar a direção do sprite do Javali e ajustar a velocidade das animações

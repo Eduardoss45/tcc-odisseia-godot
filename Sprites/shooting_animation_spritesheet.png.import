@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7q5qtmnh7yef"
-path="res://.godot/imported/5.png-60fe050f35add98be6b63873df488c2a.ctex"
+uid="uid://ddc08lqsvbqki"
+path="res://.godot/imported/shooting_animation_spritesheet.png-6c8e05871a3b0557dfb92abe6f5651ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/hp/5.png"
-dest_files=["res://.godot/imported/5.png-60fe050f35add98be6b63873df488c2a.ctex"]
+source_file="res://Sprites/shooting_animation_spritesheet.png"
+dest_files=["res://.godot/imported/shooting_animation_spritesheet.png-6c8e05871a3b0557dfb92abe6f5651ed.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b345l5jpx56h6"
-path="res://.godot/imported/2.png-5af20beb0a7bfb9f436c5a2057ac8c9b.ctex"
+uid="uid://bx027j4qe1l4v"
+path="res://.godot/imported/javali_parado_spritesheet.png-06037eed5f7e2f7ab9797a68b02e3ed3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/hp/2.png"
-dest_files=["res://.godot/imported/2.png-5af20beb0a7bfb9f436c5a2057ac8c9b.ctex"]
+source_file="res://Sprites/javali_parado_spritesheet.png"
+dest_files=["res://.godot/imported/javali_parado_spritesheet.png-06037eed5f7e2f7ab9797a68b02e3ed3.ctex"]
 
 [params]
 

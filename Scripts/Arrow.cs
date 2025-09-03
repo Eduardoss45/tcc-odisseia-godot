@@ -40,8 +40,8 @@ public partial class Arrow : CharacterBody2D
 
         UpdateRotation();
 
-        CollisionLayer = 1 << 1;
-        CollisionMask = 1 << 2;
+        CollisionLayer = 1 << 0;
+        CollisionMask = 1 << 1;
 
         GD.Print("Arrow inicializada. Velocity: ", velocity);
     }
@@ -54,12 +54,20 @@ public partial class Arrow : CharacterBody2D
             var collision = MoveAndCollide(motion);
             if (collision != null)
             {
-                GD.Print("Arrow colidiu e será destruída");
+                GD.Print("Arrow colidiu");
+
+                if (collision.GetCollider() is Mob mob)
+                {
+                    mob.TakeDamage(5);
+                    GD.Print("Mob atingido! Dano: 5");
+                }
+
                 QueueFree();
                 return;
             }
         }
     }
+
 
     public void UpdateRotation()
     {
