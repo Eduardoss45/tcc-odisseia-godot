@@ -81,8 +81,8 @@ public partial class Game : Node2D
             mob.SpriteSheetWidth = data.SpriteSheetWidth;
             mob.SpriteSheetHeight = data.SpriteSheetHeight;
             mob.SpriteSheetPath = data.SpriteSheetPath;
-            mob.FrameWidth = data.FrameWidth;   // <-- agora vem do JSON
-            mob.FrameHeight = data.FrameHeight;
+            // mob.FrameWidth = data.FrameWidth;   // <-- agora vem do JSON
+            // mob.FrameHeight = data.FrameHeight;
             mob.SetAIActive(data.AiEnabled);
         }
         // Configura StaticNpc

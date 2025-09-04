@@ -1,4 +1,2 @@
 - Ajustar o novo Readme
-- Dividir codigo em partes menores
-- Implementar sprites de arco
-- Ajustar a direção do sprite do Javali e ajustar a velocidade das animações
+- Ajustar barras de hp/stm

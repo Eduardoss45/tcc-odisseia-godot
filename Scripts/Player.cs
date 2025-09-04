@@ -139,8 +139,19 @@ public partial class Player : CharacterBody2D
 
 			if (sprite != null)
 			{
+				if (!string.IsNullOrEmpty(BowSpriteSheetPath))
+				{
+					var tex = GD.Load<Texture2D>(BowSpriteSheetPath);
+					if (tex != null && sprite.Texture.ResourcePath != BowSpriteSheetPath)
+					{
+						sprite.Texture = tex;
+						sprite.Hframes = BowHFrames;
+						sprite.Vframes = BowVFrames;
+					}
+				}
 				shootLine = GetDirectionIndex(dir);
-				sprite.FrameCoords = new Vector2I(shootFrame, shootLine); // mostra a linha correta
+
+				sprite.FrameCoords = new Vector2I(0, shootLine);
 			}
 
 			if (crosshair != null)
@@ -171,6 +182,9 @@ public partial class Player : CharacterBody2D
 		{
 			isAiming = false;
 			if (crosshair != null) crosshair.Visible = false;
+
+			ApplySprite();
+			sprite.FrameCoords = new Vector2I(0, GetDirectionIndex(lastAttackDir));
 		}
 
 		// Tiro
@@ -352,8 +366,10 @@ public partial class Player : CharacterBody2D
 				{
 					isAttacking = false;
 					ApplySprite();
-					// Volta para a direção do ataque, não do movimento
-					sprite.FrameCoords = new Vector2I(0, GetDirectionIndex(attackDir));
+
+					lastAttackDir = attackDir;
+
+					sprite.FrameCoords = new Vector2I(0, GetDirectionIndex(lastAttackDir));
 					faceLocked = false;
 				}
 				else
@@ -461,6 +477,9 @@ public partial class Player : CharacterBody2D
 
 	private int GetIdleDirection()
 	{
+		if (!isAttacking && lastAttackDir != Vector2.Zero)
+			return GetDirectionIndex(lastAttackDir);
+
 		if (faceLocked && lastAttackDir != Vector2.Zero)
 			return GetDirectionIndex(lastAttackDir);
 
