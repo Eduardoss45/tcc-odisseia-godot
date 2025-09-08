@@ -21,7 +21,7 @@
     "CharacterResourcePath": "res://Chars/Athena.dch",
     "PlayerResourcePath": "res://Chars/Odisseu.dch",
     "SpriteSheetPath": "res://Sprites/athena_spritesheet.png",
-    "Position": [410, 270]
+    "Position": [615, 145]
   },
   {
     "ScenePath": "res://Cenas/Player.tscn",
