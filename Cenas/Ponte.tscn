@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://3bq5m10s0658"]
+
+[ext_resource type="Script" uid="uid://cy0ogetlpdr51" path="res://Scripts/Ponte.cs" id="1_ikjg6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rnr1h"]
+
+[node name="Ponte" type="Node2D"]
+script = ExtResource("1_ikjg6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_rnr1h")

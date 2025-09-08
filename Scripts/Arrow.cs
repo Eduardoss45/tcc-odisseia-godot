@@ -4,7 +4,7 @@ using System;
 public partial class Arrow : CharacterBody2D
 {
     [Export] public Vector2 velocity = Vector2.Zero;
-    [Export] public string SpritePath;
+    [Export] public string SpritePath = "res://Sprites/arrow.png";
 
     private Sprite2D sprite;
 
@@ -18,32 +18,19 @@ public partial class Arrow : CharacterBody2D
             GD.PrintErr("Sprite2D não encontrado na Arrow!");
             return;
         }
-        else
-        {
-            GD.Print("Sprite2D encontrado");
-        }
 
         if (!string.IsNullOrEmpty(SpritePath))
         {
-            GD.Print($"Tentando carregar textura: {SpritePath}");
             var tex = GD.Load<Texture2D>(SpritePath);
             if (tex != null)
-            {
                 sprite.Texture = tex;
-                GD.Print("Textura aplicada com sucesso");
-            }
-            else
-            {
-                GD.PrintErr($"Falha ao carregar textura: {SpritePath}");
-            }
         }
 
         UpdateRotation();
 
+        // 🔹 Flecha está na camada 1
         CollisionLayer = 1 << 0;
-        CollisionMask = 1 << 1;
-
-        GD.Print("Arrow inicializada. Velocity: ", velocity);
+        CollisionMask = 1 << 1; // só detecta alvo ou mobs
     }
 
     public override void _PhysicsProcess(double delta)
@@ -59,40 +46,24 @@ public partial class Arrow : CharacterBody2D
                 if (collision.GetCollider() is Mob mob)
                 {
                     mob.TakeDamage(5);
-                    GD.Print("Mob atingido! Dano: 5");
+                    GD.Print("Mob atingido!");
                 }
 
-                QueueFree();
-                return;
+                if (collision.GetCollider() is Alvo alvo)
+                {
+                    GD.Print("Alvo atingido por flecha!");
+                    alvo.GetParent().RemoveChild(alvo);
+                    alvo.QueueFree();
+                }
+
+                QueueFree(); // destrói a flecha
             }
         }
     }
-
 
     public void UpdateRotation()
     {
         if (velocity != Vector2.Zero)
-        {
             Rotation = velocity.Angle() + MathF.PI / 2;
-            GD.Print("Arrow rotação aplicada: ", Rotation);
-        }
-    }
-
-    public void ApplySprite()
-    {
-        if (sprite != null && !string.IsNullOrEmpty(SpritePath))
-        {
-            GD.Print($"ApplySprite chamado. Carregando: {SpritePath}");
-            var tex = GD.Load<Texture2D>(SpritePath);
-            if (tex != null)
-            {
-                sprite.Texture = tex;
-                GD.Print("Textura aplicada via ApplySprite");
-            }
-            else
-            {
-                GD.PrintErr($"Falha ao carregar textura via ApplySprite: {SpritePath}");
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://ceiql51yedm87"]
+[gd_scene load_steps=11 format=4 uid="uid://ceiql51yedm87"]
 
 [ext_resource type="Script" uid="uid://uhb2wn7jt6eg" path="res://Scripts/Game.cs" id="1_sb48q"]
 [ext_resource type="TileSet" uid="uid://cvql1mbmm7u2l" path="res://Maps/estradas.tres" id="2_u44n3"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://7f4ghn8rwvus" path="res://Scripts/Hud.cs" id="3_u44n3"]
 [ext_resource type="Texture2D" uid="uid://cyxtswt2mb88a" path="res://Sprites/pedra.png" id="6_3mrqo"]
 [ext_resource type="Texture2D" uid="uid://bg1arhe237hns" path="res://Maps/Atlas/floreta.png" id="6_r0x5m"]
+[ext_resource type="PackedScene" uid="uid://bk5gc0tly1hii" path="res://Cenas/Alvo.tscn" id="7_3mrqo"]
+[ext_resource type="PackedScene" uid="uid://3bq5m10s0658" path="res://Cenas/Ponte.tscn" id="8_joorw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t88pq"]
 size = Vector2(1243, 414)
@@ -90,3 +92,9 @@ texture = ExtResource("6_3mrqo")
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(615, 145)
+
+[node name="Alvo" parent="." instance=ExtResource("7_3mrqo")]
+position = Vector2(1422, 243)
+
+[node name="Ponte" parent="." instance=ExtResource("8_joorw")]
+position = Vector2(1318, 352)

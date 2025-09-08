@@ -102,3 +102,37 @@ C:\Users\joaop\OneDrive\Área de Trabalho\Odisseia\.godot\mono\temp\obj\Debug\re
 C:\Users\joaop\OneDrive\Área de Trabalho\Odisseia\.godot\mono\temp\obj\Debug\projeto.pdb
 C:\Users\joaop\OneDrive\Área de Trabalho\Odisseia\.godot\mono\temp\obj\Debug\projeto.genruntimeconfig.cache
 C:\Users\joaop\OneDrive\Área de Trabalho\Odisseia\.godot\mono\temp\obj\Debug\ref\projeto.dll
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.deps.json
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.runtimeconfig.json
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.dll
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.pdb
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\GodotSharp.dll
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.csproj.AssemblyReference.cache
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.AssemblyInfoInputs.cache
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.AssemblyInfo.cs
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.csproj.CoreCompileInputs.cache
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.csproj.Up2Date
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.dll
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\refint\projeto.dll
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.pdb
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.genruntimeconfig.cache
+C:\Users\joaop\OneDrive\Área de Trabalho\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\ref\projeto.dll
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.deps.json
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.runtimeconfig.json
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.dll
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\projeto.pdb
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\GodotSharp.dll
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\bin\Debug\GodotSharpEditor.dll
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.csproj.AssemblyReference.cache
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.AssemblyInfoInputs.cache
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.AssemblyInfo.cs
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.csproj.CoreCompileInputs.cache
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.csproj.Up2Date
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.dll
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\refint\projeto.dll
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.pdb
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\projeto.genruntimeconfig.cache
+C:\Users\gilgi\OneDrive\Desktop\tcc-odisseia-godot-main\.godot\mono\temp\obj\Debug\ref\projeto.dll

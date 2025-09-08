@@ -423,7 +423,6 @@ public partial class Player : CharacterBody2D
 		if (!string.IsNullOrEmpty(ArrowSpriteSheetPath))
 		{
 			arrow.SpritePath = ArrowSpriteSheetPath;
-			arrow.ApplySprite();
 		}
 
 		arrow.UpdateRotation();
