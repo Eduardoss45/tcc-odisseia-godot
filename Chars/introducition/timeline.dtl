@@ -1,0 +1,26 @@
+[background arg="res://assets/interface/fundoInt.png" fade="0.0"]
+audio music "res://Musicas/musicaAmbiente.mp3"
+join oldOdisseu (listen) left
+oldOdisseu (talking): Eu sou Odisseu, rei de Ítaca.\
+Herói da guerra de Troia, mas também prisioneiro do destino que os deuses lançaram sobre mim.\
+Minha espada venceu batalhas, mas agora é meu coração que luta contra o tempo, o mar e a saudade.
+oldOdisseu (talking): Há muitos anos deixei minha terra.\
+Prometi voltar, e é essa promessa que me guia.\
+Mas o caminho de volta não é simples\: ondas violentas me arrastam, monstros surgem das sombras, e deuses testam minha força e minha astúcia.
+oldOdisseu (talking): Cada ilha é um novo enigma.\
+Cada encontro traz perigo ou esperança.\
+Sereias tentam me seduzir com seu canto, gigantes desejam me destruir, e até mesmo os ventos parecem conspirar contra mim.
+oldOdisseu (talking): Ainda assim, sigo em frente, pois Ítaca me espera.\
+Minha esposa me espera.\
+Meu filho me espera.
+oldOdisseu (talking): Mas agora não caminho sozinho.\
+Tu estás comigo.\
+É tua coragem que pode mudar meu destino.\
+É tua escolha que decide se vou reencontrar meu lar ou me perder para sempre nas águas.
+oldOdisseu (talking): Prepara-te.\
+A Odisseia não é apenas uma lenda antiga.\
+Ela é um desafio vivo.\
+E hoje, ela será tua aventura.
+leave oldOdisseu
+Muito, muito tempo atrás ...
+[end_timeline]

@@ -1,0 +1,30 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://cqll5wtah0jfb"]
+
+[ext_resource type="Texture2D" uid="uid://b2oqpxiqh0n4m" path="res://Sprites/spriteFrames/pixil-frame-0.png" id="1_clqtx"]
+[ext_resource type="Texture2D" uid="uid://wk4xbkaftovt" path="res://Sprites/spriteFrames/pixil-frame-1.png" id="2_eq5m4"]
+[ext_resource type="Texture2D" uid="uid://d0xkn0aamh5s" path="res://Sprites/spriteFrames/pixil-frame-2.png" id="3_ka5yb"]
+[ext_resource type="Texture2D" uid="uid://83iq3bdue3fi" path="res://Sprites/spriteFrames/pixil-frame-3.png" id="4_sbew7"]
+[ext_resource type="Texture2D" uid="uid://bgkah0ujl4cie" path="res://Sprites/spriteFrames/pixil-frame-4.png" id="5_cmxu7"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_clqtx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_eq5m4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ka5yb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_sbew7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_cmxu7")
+}],
+"loop": false,
+"name": &"Descer",
+"speed": 2.0
+}]

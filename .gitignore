@@ -1,0 +1,11 @@
+*.tmp
+*.temp
+*.log
+*.godot.tmp
+*.pck
+*.zip
+bin/
+build/
+.DS_Store
+Thumbs.db
+Modules/

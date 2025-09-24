@@ -1,0 +1,2 @@
+- Ajustar o novo Readme
+- Ajustar barras de hp/stm

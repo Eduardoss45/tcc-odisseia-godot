@@ -1,0 +1,72 @@
+[gd_scene load_steps=9 format=3 uid="uid://dx8jq86yjv4io"]
+
+[ext_resource type="Texture2D" uid="uid://66fsmjxyju7r" path="res://assets/interface/fundoInt.png" id="1_oh4jq"]
+[ext_resource type="Texture2D" uid="uid://cfndg321rug0o" path="res://assets/interface/logo_1.png" id="2_knros"]
+[ext_resource type="Texture2D" uid="uid://co4o5gxqpocj" path="res://assets/hud/btn_start.png" id="2_pi62y"]
+[ext_resource type="Texture2D" uid="uid://dxvqjdgb3aojs" path="res://assets/hud/btn_quit.png" id="3_ectly"]
+[ext_resource type="Script" uid="uid://cdmnkeamqh3s7" path="res://Scripts/BtnStart.cs" id="4_348rq"]
+[ext_resource type="Script" uid="uid://b6etwfws2uhq5" path="res://Scripts/BtnQuit.cs" id="6_xhhru"]
+[ext_resource type="Texture2D" uid="uid://uy7gn475o06m" path="res://assets/interface/logo_0.png" id="7_oh4jq"]
+
+[sub_resource type="Theme" id="Theme_5dpk2"]
+
+[node name="Main" type="MarginContainer"]
+offset_right = 2428.0
+offset_bottom = 1430.0
+scale = Vector2(0.5, 0.5)
+
+[node name="Background" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+texture = ExtResource("1_oh4jq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 100
+
+[node name="Logo" type="TextureRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(500, 600)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+texture = ExtResource("2_knros")
+expand_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_constants/separation = 100
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BtnStart" type="TextureRect" parent="VBoxContainer/HBoxContainer/MarginContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(300, 100)
+layout_mode = 2
+mouse_filter = 0
+texture = ExtResource("2_pi62y")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("4_348rq")
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BtnQuit" type="TextureRect" parent="VBoxContainer/HBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(235, 235)
+layout_mode = 2
+mouse_filter = 0
+theme = SubResource("Theme_5dpk2")
+texture = ExtResource("3_ectly")
+expand_mode = 2
+stretch_mode = 5
+script = ExtResource("6_xhhru")
+
+[node name="Logo0" type="Sprite2D" parent="."]
+position = Vector2(2310, 92)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("7_oh4jq")

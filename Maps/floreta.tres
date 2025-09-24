@@ -1,0 +1,12 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://dk4dpax0ygc46"]
+
+[ext_resource type="Texture2D" uid="uid://bg1arhe237hns" path="res://Maps/Atlas/floreta.png" id="1_hkp2s"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1uh2n"]
+texture = ExtResource("1_hkp2s")
+texture_region_size = Vector2i(960, 288)
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(960, 288)
+sources/0 = SubResource("TileSetAtlasSource_1uh2n")
