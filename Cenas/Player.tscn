@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://cl5xjh3qlugt1"]
+
+[ext_resource type="Script" uid="uid://k5tbacyumtok" path="res://Scripts/Player.cs" id="1_7k6h6"]
+[ext_resource type="Texture2D" uid="uid://dqj0l4op0x08w" path="res://Sprites/player_spritesheet.png" id="2_ybxfy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ybxfy"]
+size = Vector2(33, 40)
+
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 146
+script = ExtResource("1_7k6h6")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, -20)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 10)
+shape = SubResource("RectangleShape2D_ybxfy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 2
+texture_filter = 1
+scale = Vector2(1, 0.984)
+texture = ExtResource("2_ybxfy")
+hframes = 8
+vframes = 9
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -8
+limit_top = -296
+limit_right = 1576
+limit_bottom = 1000
+
+[node name="Crosshair" type="Sprite2D" parent="."]
+visible = false

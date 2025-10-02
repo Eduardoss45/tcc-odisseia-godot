@@ -1,0 +1,12 @@
+join Athena (listen) rightmost
+join Odisseu (listen) leftmost
+Athena (talking): Odisseu, herói de Ítaca… prove sua força. Derrote o javali mágico que assombra estas terras, e eu lhe mostrarei a verdade.
+Athena (talking): Mostrou coragem e astúcia. Agora me apresento, eu sou Atena, deusa da sabedoria. Venho torná-lo meu protegido e guiá-lo a se tornar um guerreiro da mente. Aceita meu chamado?
+join Athena (listen) rightmost
+Odisseu (talking): Uma deusa como guia? Eu seria tolo em recusar. Aceito.
+join Odisseu (listen) leftmost
+Athena (talking): Então siga em frente. Eu o observarei… e guiarei cada passo no caminho oculto dos deuses.
+join Athena (listen) rightmost
+Odisseu (talking): Incrível… mais um fiscal. Daqui a pouco vai querer dar aval até para as minhas escolhas.
+join Odisseu (listen) leftmost
+[end_timeline]

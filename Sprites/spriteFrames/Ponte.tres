@@ -1,0 +1,30 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://cjbgh2hqtdkj1"]
+
+[ext_resource type="Texture2D" uid="uid://dyaycukjieki6" path="res://Sprites/spriteFrames/ponte/1.png" id="1_3sdhb"]
+[ext_resource type="Texture2D" uid="uid://cvmjthy3turyx" path="res://Sprites/spriteFrames/ponte/3.png" id="2_qh7gy"]
+[ext_resource type="Texture2D" uid="uid://bqaeecgt4l11s" path="res://Sprites/spriteFrames/ponte/2.png" id="3_m1lbp"]
+[ext_resource type="Texture2D" uid="uid://d4gpahnn8syd2" path="res://Sprites/spriteFrames/ponte/4.png" id="4_x5qb4"]
+[ext_resource type="Texture2D" uid="uid://do81eqkd4vgia" path="res://Sprites/spriteFrames/ponte/5.png" id="5_fhie0"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_3sdhb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_m1lbp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_qh7gy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_x5qb4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_fhie0")
+}],
+"loop": false,
+"name": &"Descer",
+"speed": 2.0
+}]

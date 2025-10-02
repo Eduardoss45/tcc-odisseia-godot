@@ -1,0 +1,41 @@
+[background arg="res://assets/interface/fundoInt.png" fade="0.0"]
+audio music "res://Musicas/musicaAmbiente.mp3"
+join narrador center
+narrador: Muito antes de heróis caminharem entre nós, um poeta chamado Homero deu forma a palavras que ecoam até hoje.
+narrador: Sua voz atravessou séculos, narrando não apenas batalhas, mas o coração humano diante do impossível.
+narrador: Entre suas obras, nenhuma é tão vasta, tão cheia de perigos e esperanças, quanto a Odisseia.\
+Um poema que não fala só da guerra, mas do retorno.\
+Não só de vitórias, mas da saudade que consome.
+narrador: Odisseu, rei de Ítaca, é o herói que navega mares desconhecidos, enfrenta monstros, deuses e tentações, tudo por um único desejo\: voltar para casa.\
+Sua jornada é feita de astúcia, coragem e sofrimento.
+narrador: A Odisseia não é apenas um mito antigo.\
+Ela é um espelho do ser humano, de sua luta contra o destino, contra a solidão, contra o tempo.\
+Por isso sobreviveu, por isso ainda vive.
+narrador: Agora, essas palavras não estão apenas escritas.\
+Elas despertam diante de ti.\
+Pois a viagem de Odisseu vai recomeçar... e tu estarás ao lado dele.
+leave narrador
+join oldOdisseu (listen) left
+oldOdisseu (talking): Eu sou Odisseu, rei de Ítaca.\
+Herói da guerra de Troia, mas também prisioneiro do destino que os deuses lançaram sobre mim.
+oldOdisseu (talking): Minha espada venceu batalhas, mas agora é meu coração que luta contra o tempo, o mar e a saudade.
+oldOdisseu (talking): Há muitos anos deixei minha terra.\
+Prometi voltar, e é essa promessa que me guia.\
+Mas o caminho de volta não é simples\: ondas violentas me arrastam, monstros surgem das sombras, e deuses testam minha força e minha astúcia.
+oldOdisseu (talking): Cada ilha é um novo enigma.\
+Cada encontro traz perigo ou esperança.\
+Sereias tentam me seduzir com seu canto, gigantes desejam me destruir, e até mesmo os ventos parecem conspirar contra mim.
+oldOdisseu (talking): Ainda assim, sigo em frente, pois Ítaca me espera.\
+Minha esposa me espera.\
+Meu filho me espera.
+oldOdisseu (talking): Mas agora não caminho sozinho.\
+Tu estás comigo.\
+É tua coragem que pode mudar meu destino.\
+É tua escolha que decide se vou reencontrar meu lar ou me perder para sempre nas águas.
+oldOdisseu (talking): Prepara-te.\
+A Odisseia não é apenas uma lenda antiga.\
+Ela é um desafio vivo.\
+E hoje, ela será tua aventura.
+leave oldOdisseu
+Muito, muito tempo atrás ...
+[end_timeline]

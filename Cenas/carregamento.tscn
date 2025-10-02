@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhj6hlrl0kgnm"]
+
+[ext_resource type="Script" uid="uid://fk283ebhytx" path="res://Scripts/Carregamento.cs" id="1_omqmp"]
+
+[node name="Main" type="MarginContainer"]
+offset_right = 2410.0
+offset_bottom = 1418.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_omqmp")

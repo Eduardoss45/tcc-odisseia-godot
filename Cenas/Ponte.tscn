@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://3bq5m10s0658"]
+
+[ext_resource type="Script" uid="uid://cy0ogetlpdr51" path="res://Scripts/Ponte.cs" id="1_ikjg6"]
+[ext_resource type="SpriteFrames" uid="uid://cjbgh2hqtdkj1" path="res://Sprites/spriteFrames/Ponte.tres" id="2_rnr1h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ikjg6"]
+size = Vector2(141, 49)
+
+[node name="Ponte" type="Node2D"]
+position = Vector2(-7, 0)
+script = ExtResource("1_ikjg6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_rnr1h")
+animation = &"Descer"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-2, 47)
+shape = SubResource("RectangleShape2D_ikjg6")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-1.5, 47.5)
+shape = SubResource("RectangleShape2D_ikjg6")

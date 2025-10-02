@@ -1,0 +1,94 @@
+[gd_resource type="SpriteFrames" load_steps=22 format=3 uid="uid://c6urdr0kdsdve"]
+
+[ext_resource type="Texture2D" uid="uid://cx84taor2cget" path="res://Sprites/spriteFrames/vida/pixil-frame-3.png" id="1_ps148"]
+[ext_resource type="Texture2D" uid="uid://cfjq3a5jue3u8" path="res://Sprites/spriteFrames/vida/pixil-frame-6.png" id="2_w8sh3"]
+[ext_resource type="Texture2D" uid="uid://bsqwg1jsmkf4o" path="res://Sprites/spriteFrames/vida/pixil-frame-5.png" id="3_y5ha1"]
+[ext_resource type="Texture2D" uid="uid://cvnowgf11w7eu" path="res://Sprites/spriteFrames/vida/pixil-frame-4.png" id="4_ml0s1"]
+[ext_resource type="Texture2D" uid="uid://cd51gkpqjvpsk" path="res://Sprites/spriteFrames/vida/pixil-frame-2.png" id="5_dkn4k"]
+[ext_resource type="Texture2D" uid="uid://cuppah2lshuwb" path="res://Sprites/spriteFrames/vida/pixil-frame-13.png" id="6_mc57q"]
+[ext_resource type="Texture2D" uid="uid://hiuk2q63s66d" path="res://Sprites/spriteFrames/vida/pixil-frame-14.png" id="7_lsdc2"]
+[ext_resource type="Texture2D" uid="uid://gwntox5thph7" path="res://Sprites/spriteFrames/vida/pixil-frame-12.png" id="8_lgba8"]
+[ext_resource type="Texture2D" uid="uid://d1rx7udfu70s3" path="res://Sprites/spriteFrames/vida/pixil-frame-11.png" id="9_4veb2"]
+[ext_resource type="Texture2D" uid="uid://dv5xvsnf0okk0" path="res://Sprites/spriteFrames/vida/pixil-frame-10.png" id="10_srpba"]
+[ext_resource type="Texture2D" uid="uid://xcrect0cu2sr" path="res://Sprites/spriteFrames/vida/pixil-frame-9.png" id="11_1fi08"]
+[ext_resource type="Texture2D" uid="uid://8j5sof3v4ofo" path="res://Sprites/spriteFrames/vida/pixil-frame-8.png" id="12_u4pby"]
+[ext_resource type="Texture2D" uid="uid://22utstgnsagb" path="res://Sprites/spriteFrames/vida/pixil-frame-17.png" id="13_u6ruj"]
+[ext_resource type="Texture2D" uid="uid://cqaxhysr0x4mr" path="res://Sprites/spriteFrames/vida/pixil-frame-20.png" id="14_mptug"]
+[ext_resource type="Texture2D" uid="uid://c5cuta1mcpt6t" path="res://Sprites/spriteFrames/vida/pixil-frame-19.png" id="15_o1hps"]
+[ext_resource type="Texture2D" uid="uid://c15fyk0yulj67" path="res://Sprites/spriteFrames/vida/pixil-frame-18.png" id="16_mhawa"]
+[ext_resource type="Texture2D" uid="uid://c3cy67s3c3gy7" path="res://Sprites/spriteFrames/vida/pixil-frame-15.png" id="17_8sjdp"]
+[ext_resource type="Texture2D" uid="uid://det8oejs7op05" path="res://Sprites/spriteFrames/vida/pixil-frame-16.png" id="18_gp7yt"]
+[ext_resource type="Texture2D" uid="uid://djlldnhusreca" path="res://Sprites/spriteFrames/vida/pixil-frame-7.png" id="19_nytar"]
+[ext_resource type="Texture2D" uid="uid://cvo4i76s2ygmp" path="res://Sprites/spriteFrames/vida/pixil-frame-1.png" id="20_41xwb"]
+[ext_resource type="Texture2D" uid="uid://bjoq5prkwo0d8" path="res://Sprites/spriteFrames/vida/pixil-frame-0.png" id="21_ug72a"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ps148")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_w8sh3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_y5ha1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ml0s1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_dkn4k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_mc57q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_lsdc2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_lgba8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_4veb2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_srpba")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_1fi08")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_u4pby")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_u6ruj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_mptug")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_o1hps")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_mhawa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_8sjdp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_gp7yt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_nytar")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_41xwb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_ug72a")
+}],
+"loop": true,
+"name": &"fullLife",
+"speed": 5.0
+}]

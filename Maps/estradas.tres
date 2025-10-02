@@ -1,0 +1,133 @@
+[gd_resource type="TileSet" load_steps=8 format=3 uid="uid://cvql1mbmm7u2l"]
+
+[ext_resource type="Texture2D" uid="uid://f5jqgxnbyugg" path="res://Maps/Atlas/estrada.png" id="1_is380"]
+[ext_resource type="Texture2D" uid="uid://dj7xs8lbq40qs" path="res://Maps/Atlas/grama.png" id="2_m4ny3"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u44n3"]
+texture = ExtResource("1_is380")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vtnme"]
+texture = ExtResource("2_m4ny3")
+texture_region_size = Vector2i(64, 64)
+0:0/animation_columns = 2
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_is380"]
+resource_name = "bordaBases"
+texture = ExtResource("2_m4ny3")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -2, -32, 32, -32)
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, 32, 2, 32, 32, 32)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, 32, 2, 32, 32, 32)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -2, -32, 32, -32)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m4ny3"]
+resource_name = "bordaLaterais"
+texture = ExtResource("2_m4ny3")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -32, 32, -32, -2.5)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(32, -32, 32, 32, 32, -8.5)
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(32, -32, 32, 32, 32, -8.5)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -32, 32, -32, -2.5)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_byid7"]
+resource_name = "bordaE"
+texture = ExtResource("1_is380")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+9:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -32, -32, -32, 32, -32, 32)
+10:0/0 = 0
+11:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+9:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -32, -32, -32, 32, -32, 32)
+10:1/0 = 0
+11:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+9:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, -32, -32, -32, 32, -32, 32)
+10:2/0 = 0
+11:2/0 = 0
+
+[resource]
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 255
+physics_layer_0/collision_mask = 255
+sources/0 = SubResource("TileSetAtlasSource_u44n3")
+sources/1 = SubResource("TileSetAtlasSource_vtnme")
+sources/2 = SubResource("TileSetAtlasSource_is380")
+sources/3 = SubResource("TileSetAtlasSource_m4ny3")
+sources/4 = SubResource("TileSetAtlasSource_byid7")

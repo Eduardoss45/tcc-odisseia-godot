@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "b17z3gKD6ZI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\gilgi\\Downloads\\TCC_Odisseia\\projeto.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gilgi\\.nuget\\packages\\godot.sourcegenerators\\4.4.1\\godot.sourcegenerators.4.4.1.nupkg.sha512",
+    "C:\\Users\\gilgi\\.nuget\\packages\\godotsharp\\4.4.1\\godotsharp.4.4.1.nupkg.sha512",
+    "C:\\Users\\gilgi\\.nuget\\packages\\godotsharpeditor\\4.4.1\\godotsharpeditor.4.4.1.nupkg.sha512",
+    "C:\\Users\\gilgi\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.11\\microsoft.netcore.app.ref.8.0.11.nupkg.sha512",
+    "C:\\Users\\gilgi\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.11\\microsoft.windowsdesktop.app.ref.8.0.11.nupkg.sha512",
+    "C:\\Users\\gilgi\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.11\\microsoft.aspnetcore.app.ref.8.0.11.nupkg.sha512"
+  ],
+  "logs": []
+}

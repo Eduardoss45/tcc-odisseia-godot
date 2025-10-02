@@ -1,0 +1,40 @@
+{
+"@path": "res://addons/dialogic/Resources/character.gd",
+"@subpath": NodePath(""),
+&"_translation_id": "",
+&"color": Color(0.608053, 0.940043, 0.945313, 1),
+&"custom_info": {
+"prefix": "",
+"sound_mood_default": "",
+"sound_moods": {},
+"style": "",
+"suffix": ""
+},
+&"default_portrait": "talking",
+&"description": "",
+&"display_name": "Athena",
+&"mirror": false,
+&"nicknames": ["moça"],
+&"offset": Vector2(0, 0),
+&"portraits": {
+"listen": {
+"export_overrides": {
+"image": "\"res://Chars/introducition/retratos/AtheListen.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": ""
+},
+"talking": {
+"export_overrides": {
+"image": "\"res://Chars/introducition/retratos/AtheTalking.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": ""
+}
+},
+&"scale": 0.55
+}

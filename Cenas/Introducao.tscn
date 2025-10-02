@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://do2bumm2dfn4w"]
+
+[ext_resource type="Script" uid="uid://cxd3py4f30ef1" path="res://Scripts/Introducao.cs" id="1_tdqpl"]
+
+[node name="Main" type="MarginContainer"]
+offset_right = 2410.0
+offset_bottom = 1418.0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_tdqpl")

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://b6xm01culetbw"]
+
+[ext_resource type="Script" uid="uid://dge4qpu1igiti" path="res://Scripts/Arrow.cs" id="1_7whcc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mpqx0"]
+
+[node name="Arrow" type="CharacterBody2D"]
+collision_mask = 2
+script = ExtResource("1_7whcc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_mpqx0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]

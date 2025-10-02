@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://bmrjxxry7khsd"]
+
+[ext_resource type="Script" uid="uid://cfse5o2wn0sm" path="res://Scripts/Mob.cs" id="1_4jutn"]
+[ext_resource type="Script" uid="uid://bcarycl4owf53" path="res://Scripts/MobAI.cs" id="2_trkgy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o3ckw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4jutn"]
+size = Vector2(76.5, 38.5)
+
+[node name="Mob" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 129
+script = ExtResource("1_4jutn")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(0, -20)
+scale = Vector2(1, 0.984)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_o3ckw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 2
+texture_filter = 1
+scale = Vector2(1, 0.984)
+
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(2, 2)
+collision_layer = 0
+collision_mask = 129
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0.25, 1.25)
+shape = SubResource("RectangleShape2D_4jutn")
+
+[node name="MobAI" type="Node" parent="."]
+script = ExtResource("2_trkgy")
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 0.074
+one_shot = true

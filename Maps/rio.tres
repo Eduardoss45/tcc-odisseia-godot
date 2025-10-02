@@ -1,0 +1,29 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://bu5sk08higkxl"]
+
+[ext_resource type="Texture2D" uid="uid://bwg8rcfrggq25" path="res://Maps/Atlas/rio.png" id="1_sun85"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4s2co"]
+resource_name = "rio"
+texture = ExtResource("1_sun85")
+texture_region_size = Vector2i(192, 192)
+0:0/animation_columns = 11
+0:0/animation_frame_0/duration = 0.091
+0:0/animation_frame_1/duration = 0.091
+0:0/animation_frame_2/duration = 0.091
+0:0/animation_frame_3/duration = 0.091
+0:0/animation_frame_4/duration = 0.091
+0:0/animation_frame_5/duration = 0.091
+0:0/animation_frame_6/duration = 0.091
+0:0/animation_frame_7/duration = 0.091
+0:0/animation_frame_8/duration = 0.091
+0:0/animation_frame_9/duration = 0.091
+0:0/animation_frame_10/duration = 0.091
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-61.8099, -96, 53.9073, -96, 54.0585, -78.8536, 58.0802, -77.9067, 57.8871, -64.3675, 59.9462, -59.7129, 65.5443, -48.5168, 67.4103, -34.5215, 70.6758, -34.5215, 70.2093, -20.9928, 72.5419, -20.9928, 71.6089, 3.26556, 66.4773, 15.3947, 66.0108, 25.6579, 58.5467, 45.2512, 62.2787, 60.1794, 63.6782, 70.9091, 66.0108, 73.7082, 65.0778, 79.3062, 58.0802, 86.7703, 56.9654, 90.9201, 55.6007, 96, -64.6323, 96, -66.0108, 71.8421, -62.7452, 63.445, -57.1471, 54.1148, -58.0802, 34.055, -60.8792, 26.1244, -67.4103, 14.9282, -75.3409, 3.26556, -75.3409, -14.9282, -73.9414, -23.7919, -71.6089, -28.9235, -62.7452, -50.8493, -59.9462, -58.3134, -57.1471, -65.311, -56.2141, -82.1053, -58.0802, -88.1699)
+
+[resource]
+tile_size = Vector2i(192, 192)
+physics_layer_0/collision_layer = 128
+physics_layer_0/collision_mask = 0
+terrain_set_0/mode = 0
+sources/0 = SubResource("TileSetAtlasSource_4s2co")
